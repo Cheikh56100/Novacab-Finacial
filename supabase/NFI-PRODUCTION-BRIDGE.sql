@@ -1,0 +1,6 @@
+-- DEPRECATED
+-- NFI est désormais intégré directement au projet Supabase NOVACAB.
+-- Le modèle précédent (profiles / teams / companies) n'est plus utilisé.
+-- Utilisez supabase/schema.sql, après avoir vérifié que les migrations
+-- de sécurité NOVACAB (team.auth_user_id, portefeuille_id, role, statut)
+-- sont bien appliquées.

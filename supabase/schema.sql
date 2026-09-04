@@ -250,16 +250,7 @@ alter table public.nfi_financial_analyses enable row level security;
 alter table public.nfi_forecasts enable row level security;
 alter table public.nfi_market_benchmarks enable row level security;
 
-drop policy if exists "nfi_exercises_select" on public.nfi_exercises;
-create policy "nfi_exercises_select" on public.nfi_exercises
-for select to authenticated
-using (public.nfi_can_access_client(client_id));
 
-drop policy if exists "nfi_exercises_write" on public.nfi_exercises;
-create policy "nfi_exercises_write" on public.nfi_exercises
-for all to authenticated
-using (public.nfi_can_access_client(client_id))
-with check (public.nfi_can_access_client(client_id));
 
 drop policy if exists "nfi_fec_select" on public.nfi_fec_imports;
 create policy "nfi_fec_select" on public.nfi_fec_imports
@@ -308,6 +299,72 @@ for all to authenticated
 using (public.nfi_can_access_client(client_id))
 with check (public.nfi_can_access_client(client_id));
 
+-- Politiques CRUD NFI : lecture/écriture courante pour les membres du portefeuille,
+-- suppression réservée aux responsables du cabinet.
+drop policy if exists "nfi_exercises_select" on public.nfi_exercises;
+create policy "nfi_exercises_select" on public.nfi_exercises
+for select to authenticated using (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_exercises_insert" on public.nfi_exercises;
+create policy "nfi_exercises_insert" on public.nfi_exercises
+for insert to authenticated with check (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_exercises_update" on public.nfi_exercises;
+create policy "nfi_exercises_update" on public.nfi_exercises
+for update to authenticated using (public.nfi_can_access_client(client_id)) with check (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_exercises_delete" on public.nfi_exercises;
+create policy "nfi_exercises_delete" on public.nfi_exercises
+for delete to authenticated using (public.nfi_can_access_client(client_id) and public.nfi_current_role() in ('admin','expert','chef_mission'));
+
+drop policy if exists "nfi_fec_imports_select" on public.nfi_fec_imports;
+create policy "nfi_fec_imports_select" on public.nfi_fec_imports
+for select to authenticated using (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_fec_imports_insert" on public.nfi_fec_imports;
+create policy "nfi_fec_imports_insert" on public.nfi_fec_imports
+for insert to authenticated with check (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_fec_imports_update" on public.nfi_fec_imports;
+create policy "nfi_fec_imports_update" on public.nfi_fec_imports
+for update to authenticated using (public.nfi_can_access_client(client_id)) with check (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_fec_imports_delete" on public.nfi_fec_imports;
+create policy "nfi_fec_imports_delete" on public.nfi_fec_imports
+for delete to authenticated using (public.nfi_can_access_client(client_id) and public.nfi_current_role() in ('admin','expert','chef_mission'));
+
+drop policy if exists "nfi_financial_analyses_select" on public.nfi_financial_analyses;
+create policy "nfi_financial_analyses_select" on public.nfi_financial_analyses
+for select to authenticated using (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_financial_analyses_insert" on public.nfi_financial_analyses;
+create policy "nfi_financial_analyses_insert" on public.nfi_financial_analyses
+for insert to authenticated with check (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_financial_analyses_update" on public.nfi_financial_analyses;
+create policy "nfi_financial_analyses_update" on public.nfi_financial_analyses
+for update to authenticated using (public.nfi_can_access_client(client_id)) with check (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_financial_analyses_delete" on public.nfi_financial_analyses;
+create policy "nfi_financial_analyses_delete" on public.nfi_financial_analyses
+for delete to authenticated using (public.nfi_can_access_client(client_id) and public.nfi_current_role() in ('admin','expert','chef_mission'));
+
+drop policy if exists "nfi_forecasts_select" on public.nfi_forecasts;
+create policy "nfi_forecasts_select" on public.nfi_forecasts
+for select to authenticated using (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_forecasts_insert" on public.nfi_forecasts;
+create policy "nfi_forecasts_insert" on public.nfi_forecasts
+for insert to authenticated with check (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_forecasts_update" on public.nfi_forecasts;
+create policy "nfi_forecasts_update" on public.nfi_forecasts
+for update to authenticated using (public.nfi_can_access_client(client_id)) with check (public.nfi_can_access_client(client_id));
+
+drop policy if exists "nfi_forecasts_delete" on public.nfi_forecasts;
+create policy "nfi_forecasts_delete" on public.nfi_forecasts
+for delete to authenticated using (public.nfi_can_access_client(client_id) and public.nfi_current_role() in ('admin','expert','chef_mission'));
+
 -- Les benchmarks marché sont non confidentiels.
 drop policy if exists "nfi_benchmark_select" on public.nfi_market_benchmarks;
 create policy "nfi_benchmark_select" on public.nfi_market_benchmarks
@@ -333,3 +390,7 @@ with check (public.nfi_current_role() in ('admin','expert','chef_mission'));
 -- toute perte de données. Elles peuvent être archivées après
 -- vérification de migration.
 -- ============================================================
+
+-- NOTE V3.2+ : les suppressions des données financières sont réservées
+-- aux rôles responsables (admin/expert/chef_mission). Les membres actifs
+-- du portefeuille peuvent lire et alimenter les données NFI de leur portefeuille.

@@ -110,3 +110,61 @@ body{background:#f6f8fb;color:var(--nfi-text)}
 /* V2.8 — compte Novacab réellement interactif */
 .accountWrap{position:relative}.syncPillButton{border:1px solid #d9eee5;cursor:pointer;display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px;border-radius:9px;font-size:9px;font-weight:800}.syncPillButton:hover{background:#eaf7f1;border-color:#c8e6d9}.syncPillButton:focus-visible,.topProfileButton:focus-visible,.accountLogout:focus-visible{outline:2px solid #b9ddf4;outline-offset:2px}.topProfileButton{border:1px solid #e3e9f0;background:#fff;border-radius:9px;padding:4px 8px 4px 5px;cursor:pointer}.topProfileButton:hover{background:#f8fafc;border-color:#d7e1ea}.topProfileButton .profileAvatar{width:29px;height:29px}.topProfileButton span:nth-child(2){min-width:112px}.accountMenu{position:absolute;right:0;top:calc(100% + 9px);width:265px;background:#fff;border:1px solid #dfe7ef;border-radius:12px;box-shadow:0 18px 45px rgba(24,43,70,.13);padding:10px;z-index:80}.accountMenuHead{display:flex;align-items:center;gap:9px;padding:7px 7px 10px;border-bottom:1px solid #edf1f5}.accountMenuHead .profileAvatar{width:34px;height:34px}.accountMenuHead b,.accountMenuHead small{display:block}.accountMenuHead b{font-size:10px;color:var(--nfi-navy)}.accountMenuHead small{font-size:8px;color:#8a97a8;margin-top:3px;max-width:185px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.accountStatus{display:flex;align-items:center;gap:7px;margin:9px 5px;padding:8px 9px;border-radius:8px;background:#f3faf6;color:#27845f;font-size:9px;font-weight:750}.accountLogout{width:100%;height:36px;border:1px solid #e5eaf0;border-radius:8px;background:#fff;color:#52647c;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:9px;font-weight:800;cursor:pointer}.accountLogout:hover{background:#fff5f5;border-color:#f0d5d5;color:#c14e4e}.accountLogout:disabled{opacity:.6;cursor:wait}
 @media(max-width:760px){.syncPillButton{display:none}.topProfileButton span:nth-child(2){display:none}.topProfileButton{padding:3px}.accountMenu{right:-4px;width:250px}}
+
+
+/* NFI V3 — identité visuelle alignée NOVACAB */
+:root{
+  --nfi-navy:#17345f; --nfi-navy-deep:#10294b; --nfi-navy-soft:#eaf0f8;
+  --nfi-app:#f6f8fc; --nfi-paper:#ffffff; --nfi-paper-deep:#f1f5f9;
+  --nfi-line:#d8e0ec; --nfi-ink:#17243a; --nfi-muted:#7183a0; --nfi-gold:#d97706;
+}
+body,.app{background:var(--nfi-app);color:var(--nfi-ink)}
+.sidebar{width:236px;background:linear-gradient(180deg,#fff 0%,#f8fafd 100%);color:var(--nfi-navy);border-right:1px solid var(--nfi-line);box-shadow:8px 0 30px rgba(23,52,95,.035);padding:20px 13px}
+.brand{color:var(--nfi-navy);padding:8px 12px 30px;gap:10px;text-align:left}
+.brandMark{font-size:28px;letter-spacing:-2.5px;color:var(--nfi-navy);font-weight:900}
+.brandMark:after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--nfi-gold);margin:0 0 3px 5px}
+.brandSub{font-size:9px;color:var(--nfi-muted);font-weight:700;letter-spacing:.35px;line-height:1.35}
+.navCaption{color:#8a98ad;font-size:8px;letter-spacing:1.45px;padding-left:12px}
+.nav{color:#6f8099;min-height:40px;border-radius:11px;padding:10px 12px}
+.nav:hover{background:#f1f5fa;color:var(--nfi-navy)}
+.nav.active{background:var(--nfi-navy-soft);color:var(--nfi-navy);box-shadow:inset 3px 0 var(--nfi-navy);font-weight:800}
+.sidebarBottom{border-top:1px solid #e4eaf2;color:#8190a5;padding:14px 10px}
+.cabinetBadge{background:#fff;border:0;color:var(--nfi-navy);font-weight:800}
+.main{margin-left:236px;background:var(--nfi-app)}
+.topbar{height:68px!important;background:rgba(255,255,255,.94)!important;border-bottom:1px solid var(--nfi-line);box-shadow:0 4px 20px rgba(23,52,95,.035)!important;padding:0 30px!important;position:sticky;top:0;z-index:20}
+.topbarBrand{color:var(--nfi-navy)!important;font-weight:900!important;letter-spacing:-.4px}
+.topbarDivider{background:#d8e0ec!important}
+.topbarTitle b{color:#43536b!important}
+.topSearch{background:#f7f9fc!important;border:1px solid #e1e7ef!important;border-radius:10px!important}
+.topSearch:focus-within{border-color:#b9c8dc!important;box-shadow:0 0 0 3px rgba(23,52,95,.07)}
+.topProfileButton{border-color:#d8e0ec!important;border-radius:11px!important;background:#fff!important}
+.topProfileButton:hover{border-color:#b8c6d8!important;background:#f8fafd!important}
+.profileAvatar{background:var(--nfi-navy)!important}
+.content{padding:30px 34px 58px;max-width:1460px}
+.pageHero h1,.homeHero h1{color:var(--nfi-navy);font-weight:850}
+.eyebrow{color:#7b8da7}
+.panel,.statCard,.kpi,.companyCard,.homeRecent{border-color:var(--nfi-line);box-shadow:0 8px 28px rgba(23,52,95,.045)}
+.panel{background:#fff}
+.primary{background:var(--nfi-navy)!important;box-shadow:0 6px 15px rgba(23,52,95,.16)!important}
+.primary:hover{background:var(--nfi-navy-deep)!important}
+.secondary{background:#f8fafc;border-color:var(--nfi-line)}
+.companyBanner{background:linear-gradient(135deg,#10294b 0%,#17345f 72%,#244b78 100%);box-shadow:0 12px 30px rgba(16,41,75,.13)}
+.bannerScore{border-color:#8caed7}
+.homeHero{position:relative}
+.homeHero:after{content:"";position:absolute;right:3%;top:-18px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(23,52,95,.07),transparent 67%);pointer-events:none}
+.homeCard{background:linear-gradient(180deg,#fff,#fbfcfe)!important;border-color:var(--nfi-line)!important}
+.homeCard:hover{border-color:#bfcde0!important;box-shadow:0 14px 34px rgba(23,52,95,.08)!important}
+.homeCardNumber{color:var(--nfi-gold)!important;font-weight:850!important}
+.novacabConnection{background:#fff!important;border-color:var(--nfi-line)!important}
+.syncPillButton{background:#f5fbf8!important;border-color:#d6eadf!important;color:#2d7659!important}
+.accountMenu{border-color:var(--nfi-line)!important;box-shadow:0 22px 55px rgba(23,52,95,.15)!important}
+.accountMenuHead{background:#f8fafd;border-radius:9px;padding:10px!important;border-bottom:1px solid var(--nfi-line)!important}
+.accountStatus{background:#edf8f2!important}
+.searchDropdown{border-color:var(--nfi-line)!important;box-shadow:0 18px 40px rgba(23,52,95,.12)!important}
+@media(max-width:1100px){.sidebar{width:218px}.main{margin-left:218px}}
+@media(max-width:760px){.sidebar{width:100%;background:#fff}.main{margin-left:0}.topbar{padding:0 14px!important}.content{padding:22px 14px 38px}}
+
+/* NFI — page d'accueil / authentification, alignée avec l'univers NOVACAB */
+.authPage{min-height:100vh;display:grid;place-items:center;padding:34px;background:linear-gradient(135deg,#f7f9fc 0%,#eef3f8 55%,#f8fafc 100%);position:relative;overflow:hidden}
+.authShell{width:min(1080px,100%);position:relative;z-index:2}.authBrand{display:flex;align-items:center;gap:12px;margin:0 0 24px 4px}.authLogo{width:45px;height:45px;border-radius:13px;background:var(--nfi-navy);color:#fff;display:grid;place-items:center;font-weight:900;font-size:18px;letter-spacing:-1px;box-shadow:0 10px 25px rgba(23,52,95,.18)}.authLogo span{color:#d7b56d}.authBrand strong{display:block;color:var(--nfi-navy);font-size:13px;letter-spacing:.08em}.authBrand small{display:block;color:#8390a1;font-size:9px;margin-top:3px}.authGrid{display:grid;grid-template-columns:1.08fr .92fr;border:1px solid #dfe6ee;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 28px 70px rgba(27,52,80,.12);overflow:hidden;backdrop-filter:blur(10px)}.authIntro{padding:58px 58px 52px;background:linear-gradient(145deg,#17345f,#234d80);color:#fff;position:relative;overflow:hidden}.authIntro:after{content:"";position:absolute;width:300px;height:300px;right:-120px;bottom:-120px;border-radius:50%;border:55px solid rgba(255,255,255,.06)}.authIntro h1{font-size:42px;line-height:1.08;letter-spacing:-1.8px;margin:12px 0 18px;max-width:500px}.authIntro p{font-size:12px;line-height:1.8;color:rgba(255,255,255,.76);max-width:470px}.authFeatures{display:grid;gap:13px;margin-top:42px}.authFeatures div{display:flex;align-items:center;gap:13px}.authFeatures b{font-size:9px;color:#d8b66f;letter-spacing:.08em}.authFeatures span{font-size:10px;color:rgba(255,255,255,.9)}.authCard{padding:45px 45px 40px;background:#fff}.authTabs{display:grid;grid-template-columns:1fr 1fr;background:#f4f7fa;border:1px solid #e5ebf1;border-radius:10px;padding:4px;margin-bottom:30px}.authTabs button{border:0;background:transparent;padding:10px;border-radius:7px;font-size:10px;font-weight:800;color:#7b899b;cursor:pointer}.authTabs button.active{background:#fff;color:var(--nfi-navy);box-shadow:0 3px 12px rgba(20,40,65,.07)}.authCard h2{font-size:25px;letter-spacing:-.6px;color:var(--nfi-navy);margin:7px 0 10px}.authCard>p{font-size:10px;line-height:1.75;color:#7c8a9b;min-height:36px}.authForm{display:grid;gap:13px;margin-top:23px}.authForm label{font-size:9px;font-weight:800;color:#66778c}.authForm input{display:block;width:100%;height:42px;margin-top:6px;border:1px solid #dfe6ee;border-radius:8px;background:#fbfcfd;padding:0 12px;color:#273d57;font-size:11px;outline:none}.authForm input:focus{border-color:#86a6c5;box-shadow:0 0 0 3px rgba(61,119,167,.08)}.authForm label small{display:block;color:#a0abb7;font-weight:500;margin-top:5px}.authTrust{display:flex;gap:8px;align-items:flex-start;margin-top:18px;padding-top:17px;border-top:1px solid #edf1f5;color:#7e8c9d;font-size:8px;line-height:1.55}.authTrust svg{color:#3b8b69;flex:0 0 auto}.authGlow{position:absolute;border-radius:50%;filter:blur(2px);pointer-events:none}.authGlowOne{width:420px;height:420px;left:-230px;top:-180px;background:rgba(23,52,95,.08)}.authGlowTwo{width:360px;height:360px;right:-180px;bottom:-180px;background:rgba(210,176,103,.08)}
+@media(max-width:850px){.authPage{padding:18px}.authGrid{grid-template-columns:1fr}.authIntro{padding:34px}.authIntro h1{font-size:31px}.authFeatures{margin-top:25px}.authCard{padding:30px 25px}.authBrand{margin-left:0}}

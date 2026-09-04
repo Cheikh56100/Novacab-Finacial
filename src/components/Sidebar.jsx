@@ -15,9 +15,6 @@ export default function Sidebar({page,setPage}) {
     </button>
     <div className="navCaption">ANALYSE FINANCIÈRE</div>
     <nav>{items.map(([id,label,Icon])=><button key={id} className={page===id?"nav active":"nav"} onClick={()=>setPage(id)}><Icon size={17}/><span>{label}</span></button>)}</nav>
-    <div className="sidebarBottom">
-      <div className="cabinetBadge"><span className="onlineDot"/> NOVACAB</div>
-      <small>Compte et dossiers synchronisés</small>
-    </div>
+    <div className="sidebarBottom"><div className="cabinetBadge"><span className="onlineDot"/> NFI</div><small>Analyse financière indépendante</small></div>
   </aside>;
 }

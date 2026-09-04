@@ -1,22 +1,34 @@
-import React,{useEffect,useState} from "react";
-import {LogIn, ShieldCheck} from "lucide-react";
-import {signIn} from "../services/nfiRepository";
+import React,{useState} from "react";
+import {ArrowRight,LogIn,ShieldCheck,UserPlus} from "lucide-react";
+import {signIn,signUp} from "../services/nfiRepository";
 
 export default function AuthGate({onAuthenticated}){
- const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [busy,setBusy]=useState(false); const [error,setError]=useState("");
- const submit=async e=>{e.preventDefault();setBusy(true);setError("");try{const {user}=await signIn(email.trim(),password);onAuthenticated?.(user)}catch(err){setError(err.message||"Connexion impossible")}finally{setBusy(false)}};
- return <div className="app" style={{minHeight:"100vh",display:"grid",placeItems:"center",background:"#f5f7fa"}}>
-  <section className="panel" style={{width:"min(420px,calc(100% - 32px))",padding:32}}>
-   <div className="brand" style={{marginBottom:28}}><div className="brandMark">N<span>F</span>I</div><div><strong>NOVACAB</strong><small>Financial Intelligence</small></div></div>
-   <div className="eyebrow">ESPACE SÉCURISÉ</div><h1 style={{marginTop:6}}>Connexion NFI</h1>
-   <p>Utilisez le même compte que dans NOVACAB. Vos droits et votre portefeuille sont récupérés depuis Supabase.</p>
-   <form onSubmit={submit} style={{display:"grid",gap:12,marginTop:20}}>
-    <label className="forecastField">Email<input type="email" value={email} onChange={e=>setEmail(e.target.value)} autoComplete="username" required /></label>
-    <label className="forecastField">Mot de passe<input type="password" value={password} onChange={e=>setPassword(e.target.value)} autoComplete="current-password" required /></label>
-    {error&&<div className="notice warningNotice">{error}</div>}
-    <button className="primary fullButton" disabled={busy}><LogIn size={15}/>{busy?"Connexion…":"Se connecter"}</button>
-   </form>
-   <div className="notice qualityOk" style={{marginTop:16}}><ShieldCheck size={14}/><div>Les données financières restent protégées par les règles d'accès Supabase (RLS).</div></div>
-  </section>
+ const [mode,setMode]=useState("login");
+ const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [password,setPassword]=useState("");
+ const [busy,setBusy]=useState(false); const [error,setError]=useState(""); const [message,setMessage]=useState("");
+ const submit=async e=>{e.preventDefault();setBusy(true);setError("");setMessage("");try{
+   if(mode==="login"){const {user}=await signIn(email.trim(),password);onAuthenticated?.(user);}
+   else {const {user,session}=await signUp(email.trim(),password,name.trim()); if(session?.user) onAuthenticated?.(session.user); else setMessage("Compte créé. Vérifiez votre adresse email pour activer votre accès, puis connectez-vous.");}
+ }catch(err){setError(err.message||"Opération impossible")}finally{setBusy(false)}};
+ return <div className="authPage">
+   <div className="authGlow authGlowOne"/><div className="authGlow authGlowTwo"/>
+   <section className="authShell">
+    <div className="authBrand"><div className="authLogo"><span>N</span>FI</div><div><strong>NOVACAB</strong><small>Financial Intelligence</small></div></div>
+    <div className="authGrid">
+      <div className="authIntro"><div className="eyebrow">NFI · FINANCIAL INTELLIGENCE</div><h1>L'analyse financière qui vous accompagne.</h1><p>Analysez, comparez et comprenez les performances d'une entreprise dans un espace pensé pour les professionnels.</p><div className="authFeatures"><div><b>01</b><span>Analyse financière</span></div><div><b>02</b><span>Comparaisons sectorielles</span></div><div><b>03</b><span>Votre espace, vos données</span></div></div></div>
+      <div className="authCard">
+       <div className="authTabs"><button className={mode==="login"?"active":""} onClick={()=>{setMode("login");setError("");setMessage("")}}>Se connecter</button><button className={mode==="signup"?"active":""} onClick={()=>{setMode("signup");setError("");setMessage("")}}>Créer un compte</button></div>
+       <div className="eyebrow">ESPACE SÉCURISÉ</div><h2>{mode==="login"?"Bienvenue dans NFI":"Créer votre espace NFI"}</h2><p>{mode==="login"?"Les utilisateurs NOVACAB retrouvent automatiquement leurs dossiers et leurs droits.":"Créez un espace indépendant pour importer vos propres sociétés et effectuer vos comparaisons, sans accès aux données NOVACAB."}</p>
+       <form onSubmit={submit} className="authForm">
+        {mode==="signup"&&<label>Nom et prénom<input value={name} onChange={e=>setName(e.target.value)} autoComplete="name" required/></label>}
+        <label>Email<input type="email" value={email} onChange={e=>setEmail(e.target.value)} autoComplete="email" required/></label>
+        <label>Mot de passe<input type="password" value={password} onChange={e=>setPassword(e.target.value)} autoComplete={mode==="login"?"current-password":"new-password"} minLength={8} required/><small>8 caractères minimum</small></label>
+        {error&&<div className="notice warningNotice">{error}</div>}{message&&<div className="notice qualityOk">{message}</div>}
+        <button className="primary fullButton" disabled={busy}>{mode==="login"?<LogIn size={16}/>:<UserPlus size={16}/>} {busy?(mode==="login"?"Connexion…":"Création…"):(mode==="login"?"Se connecter":"Créer mon compte")}<ArrowRight size={15}/></button>
+       </form>
+       <div className="authTrust"><ShieldCheck size={15}/><span>Les espaces personnels sont isolés des données et dossiers NOVACAB.</span></div>
+      </div>
+    </div>
+   </section>
  </div>;
 }

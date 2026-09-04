@@ -8,9 +8,19 @@ const fmt=(v,u)=>safe(v)===null?"—":u==="€"?new Intl.NumberFormat("fr-FR",{m
 const val=(r,key)=>safe(r?.[key]);
 function icon(d){return d>0?<ArrowUp size={12}/>:d<0?<ArrowDown size={12}/>:<Minus size={12}/>}
 function latest(c){const ys=Object.keys(c?.years||{}).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);return c?.years?.[ys.at(-1)]||{};}
-function marketValue(m,key){if(!m)return null; if(key==="ca"||key==="valueAdded"||key==="roe")return m[key]?.q2??null; return null;}
-function marketLabel(key){return key==="ca"?"Médiane marché (CA / entreprise)":key==="valueAdded"?"Médiane marché (VA / entreprise)":key==="roe"?"Médiane marché (ROE BDF)":"Marché · non comparable";}
-function marketNote(key,m){if(!m)return "Aucune référence marché disponible pour ce secteur.";if(["ca","valueAdded","roe"].includes(key))return `Référence Banque de France 2024 · ${m.label}.`;return "La source publique ne reprend pas exactement la même définition que le KPI NFI : NFI ne force pas une comparaison trompeuse.";}
+function marketValue(m,key){
+ if(!m)return null;
+ if(key==="ca"||key==="valueAdded")return m[key]?.q2??null;
+ return null;
+}
+function marketLabel(key){
+ return key==="ca"?"Médiane marché (CA / entreprise)":key==="valueAdded"?"Médiane marché (VA / entreprise)":"Marché · définition BDF différente";
+}
+function marketNote(key,m){
+ if(!m)return "Aucune référence marché disponible pour ce secteur.";
+ if(["ca","valueAdded"].includes(key))return `Référence Banque de France 2024 · ${m.label}.`;
+ return "La source publique utilise une définition différente du KPI NFI : la référence BDF est affichée séparément, sans conversion artificielle.";
+}
 export default function Benchmark({company,allCompanies=[],setCompany,onDeleteCompany}){
  const [selected,setSelected]=useState(company?.id||allCompanies[0]?.id||""); const [q,setQ]=useState(""); const [peer,setPeer]=useState("");
  const current=allCompanies.find(c=>c.id===selected)||company||allCompanies[0]||null; const y=latest(current); const r=ratios(y);

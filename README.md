@@ -104,3 +104,12 @@ NFI utilise directement la session Supabase existante et retrouve le collaborate
 L'ancien connecteur « Importer un export Novacab » n'est plus requis pour synchroniser les dossiers : NFI lit directement `clients` et `team` dans le même projet Supabase.
 
 Un export Excel peut toujours être utilisé comme format d'échange lorsqu'il est nécessaire, mais il ne constitue plus le mécanisme de liaison entre NOVACAB et NFI.
+
+
+## Référentiel sectoriel et marché — V3.2
+
+- Le module Analyse sectorielle affiche désormais les **88 secteurs NAF** du catalogue, même lorsqu'aucune société n'est encore analysée.
+- Les KPI cabinet (Q1 / médiane / Q3) sont calculés automatiquement dès qu'un secteur contient des exercices financiers exploitables.
+- Un référentiel marché public Banque de France / FIBEN 2024 est intégré pour un périmètre élargi de divisions sectorielles (avec 13 divisions/références documentées).
+- Les ratios Banque de France dont la définition diffère des KPI NFI sont affichés comme **indicateurs BDF distincts** ; NFI ne fabrique pas de conversion trompeuse.
+- Source : Banque de France, Fascicules d'indicateurs sectoriels, base FIBEN, données 2024.

@@ -17,7 +17,7 @@ export default function FinancialScore({
       <div>
 
         <div className="eyebrow">
-          NFI FINANCIAL SCORE
+          NOVACAB INSIGHT SCORE
         </div>
 
         <div className="scoreValue">

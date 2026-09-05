@@ -1,5 +1,5 @@
 import React from "react";
-import { BarChart3, BriefcaseBusiness, GitCompare, Network } from "lucide-react";
+import { BarChart3, BriefcaseBusiness, GitCompare, Network, FileText } from "lucide-react";
 
 export default function Sidebar({page,setPage}) {
   const items = [
@@ -7,14 +7,15 @@ export default function Sidebar({page,setPage}) {
     ["companies","Mes dossiers",BriefcaseBusiness],
     ["sector","Secteur",Network],
     ["benchmark","Comparer",GitCompare],
+    ["report","Rapport client",FileText],
   ];
   return <aside className="sidebar">
-    <button className="brand" onClick={()=>setPage("dashboard")} aria-label="Accueil NFI">
-      <div className="brandMark">NFI</div>
-      <div className="brandSub">Financial Intelligence</div>
+    <button className="brand" onClick={()=>setPage("dashboard")} aria-label="Accueil NOVACAB Insight">
+      <div className="brandVisual"><img src="/novacab-mark.png" alt="NOVACAB" /></div>
+      <div><div className="brandWord"><span className="brandNOVA">NOVA</span><span className="brandCAB">CAB</span></div><div className="brandSub">Insight · Intelligence financière</div></div>
     </button>
     <div className="navCaption">ANALYSE FINANCIÈRE</div>
     <nav>{items.map(([id,label,Icon])=><button key={id} className={page===id?"nav active":"nav"} onClick={()=>setPage(id)}><Icon size={17}/><span>{label}</span></button>)}</nav>
-    <div className="sidebarBottom"><div className="cabinetBadge"><span className="onlineDot"/> NFI</div><small>Analyse financière indépendante</small></div>
+    <div className="sidebarBottom"><div className="cabinetBadge"><span className="onlineDot"/> NOVACAB Insight</div><small>Intelligence financière</small></div>
   </aside>;
 }

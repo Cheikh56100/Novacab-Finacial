@@ -168,3 +168,235 @@ body,.app{background:var(--nfi-app);color:var(--nfi-ink)}
 .authPage{min-height:100vh;display:grid;place-items:center;padding:34px;background:linear-gradient(135deg,#f7f9fc 0%,#eef3f8 55%,#f8fafc 100%);position:relative;overflow:hidden}
 .authShell{width:min(1080px,100%);position:relative;z-index:2}.authBrand{display:flex;align-items:center;gap:12px;margin:0 0 24px 4px}.authLogo{width:45px;height:45px;border-radius:13px;background:var(--nfi-navy);color:#fff;display:grid;place-items:center;font-weight:900;font-size:18px;letter-spacing:-1px;box-shadow:0 10px 25px rgba(23,52,95,.18)}.authLogo span{color:#d7b56d}.authBrand strong{display:block;color:var(--nfi-navy);font-size:13px;letter-spacing:.08em}.authBrand small{display:block;color:#8390a1;font-size:9px;margin-top:3px}.authGrid{display:grid;grid-template-columns:1.08fr .92fr;border:1px solid #dfe6ee;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 28px 70px rgba(27,52,80,.12);overflow:hidden;backdrop-filter:blur(10px)}.authIntro{padding:58px 58px 52px;background:linear-gradient(145deg,#17345f,#234d80);color:#fff;position:relative;overflow:hidden}.authIntro:after{content:"";position:absolute;width:300px;height:300px;right:-120px;bottom:-120px;border-radius:50%;border:55px solid rgba(255,255,255,.06)}.authIntro h1{font-size:42px;line-height:1.08;letter-spacing:-1.8px;margin:12px 0 18px;max-width:500px}.authIntro p{font-size:12px;line-height:1.8;color:rgba(255,255,255,.76);max-width:470px}.authFeatures{display:grid;gap:13px;margin-top:42px}.authFeatures div{display:flex;align-items:center;gap:13px}.authFeatures b{font-size:9px;color:#d8b66f;letter-spacing:.08em}.authFeatures span{font-size:10px;color:rgba(255,255,255,.9)}.authCard{padding:45px 45px 40px;background:#fff}.authTabs{display:grid;grid-template-columns:1fr 1fr;background:#f4f7fa;border:1px solid #e5ebf1;border-radius:10px;padding:4px;margin-bottom:30px}.authTabs button{border:0;background:transparent;padding:10px;border-radius:7px;font-size:10px;font-weight:800;color:#7b899b;cursor:pointer}.authTabs button.active{background:#fff;color:var(--nfi-navy);box-shadow:0 3px 12px rgba(20,40,65,.07)}.authCard h2{font-size:25px;letter-spacing:-.6px;color:var(--nfi-navy);margin:7px 0 10px}.authCard>p{font-size:10px;line-height:1.75;color:#7c8a9b;min-height:36px}.authForm{display:grid;gap:13px;margin-top:23px}.authForm label{font-size:9px;font-weight:800;color:#66778c}.authForm input{display:block;width:100%;height:42px;margin-top:6px;border:1px solid #dfe6ee;border-radius:8px;background:#fbfcfd;padding:0 12px;color:#273d57;font-size:11px;outline:none}.authForm input:focus{border-color:#86a6c5;box-shadow:0 0 0 3px rgba(61,119,167,.08)}.authForm label small{display:block;color:#a0abb7;font-weight:500;margin-top:5px}.authTrust{display:flex;gap:8px;align-items:flex-start;margin-top:18px;padding-top:17px;border-top:1px solid #edf1f5;color:#7e8c9d;font-size:8px;line-height:1.55}.authTrust svg{color:#3b8b69;flex:0 0 auto}.authGlow{position:absolute;border-radius:50%;filter:blur(2px);pointer-events:none}.authGlowOne{width:420px;height:420px;left:-230px;top:-180px;background:rgba(23,52,95,.08)}.authGlowTwo{width:360px;height:360px;right:-180px;bottom:-180px;background:rgba(210,176,103,.08)}
 @media(max-width:850px){.authPage{padding:18px}.authGrid{grid-template-columns:1fr}.authIntro{padding:34px}.authIntro h1{font-size:31px}.authFeatures{margin-top:25px}.authCard{padding:30px 25px}.authBrand{margin-left:0}}
+
+/* NFI v3 — analyse sectorielle détaillée */
+.sectorDetailGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.sectorMetricCard{border:1px solid var(--border,#e5e7eb);border-radius:14px;padding:16px;background:var(--panel,#fff)}
+.sectorMetricHead{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:12px}
+.sectorMetricHead span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.sectorMetricHead span.good{color:var(--success,#16803c)} .sectorMetricHead span.bad{color:var(--danger,#b42318)}
+.sectorMetricMain{display:flex;flex-direction:column;gap:2px}.sectorMetricMain strong{font-size:22px}.sectorMetricMain small{opacity:.65}
+.sectorMetricRef{display:flex;flex-direction:column;gap:3px;margin-top:12px;font-size:12px}
+.sectorMetricCard p{font-size:12px;line-height:1.45;margin:12px 0 0;opacity:.8}
+@media(max-width:1050px){.sectorDetailGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.sectorDetailGrid{grid-template-columns:1fr}}
+
+/* NFI v4 — diagnostic automatique */
+.diagnosticSummary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 18px}
+.diagnosticSummary article{padding:14px;border:1px solid var(--border,#e5e7eb);border-radius:12px;display:flex;flex-direction:column;gap:4px}
+.diagnosticSummary strong{font-size:28px}.diagnosticSummary small{opacity:.7;font-size:12px}
+.diagnosticColumns{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.diagnosticBox{border:1px solid var(--border,#e5e7eb);border-radius:14px;padding:16px}
+.diagnosticBox h3{margin-top:0}.diagnosticItem{padding:12px;border-left:3px solid var(--border,#ddd);margin:10px 0;background:var(--panel-soft,#fafafa);border-radius:8px}
+.diagnosticItem.good{border-left-color:var(--success,#16803c)}.diagnosticItem.bad{border-left-color:var(--danger,#b42318)}
+.diagnosticItem p{margin:5px 0 0;font-size:13px;line-height:1.5}
+.panelHead.sub{margin-top:10px}
+.actionPlan{display:grid;grid-template-columns:1fr 1fr;gap:14px}.actionPlan>div{padding:15px;border-radius:12px;background:var(--panel-soft,#fafafa)}.actionPlan p{margin:6px 0 0;line-height:1.5;font-size:13px}
+@media(max-width:800px){.diagnosticSummary,.diagnosticColumns,.actionPlan{grid-template-columns:1fr}}
+
+
+/* NFI v5 — diagnostic narratif */
+.narrativeSummary{padding:18px;border:1px solid var(--border,#e5e7eb);border-radius:14px;background:var(--panel-soft,#fafafa);margin-bottom:14px}
+.narrativeSummary h3{margin:0 0 6px}.narrativeSummary p,.narrativeGrid p{font-size:13px;line-height:1.6;margin:0}
+.narrativeGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.narrativeGrid article{border:1px solid var(--border,#e5e7eb);border-radius:14px;padding:16px}
+.narrativeGrid h3{margin:0 0 8px}
+@media(max-width:800px){.narrativeGrid{grid-template-columns:1fr}}
+
+
+/* NFI v6 — rapport de diagnostic */
+.reportKpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 18px}
+.reportKpis>div{border:1px solid var(--border,#e5e7eb);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.reportKpis strong{font-size:24px}.reportKpis small{opacity:.7;font-size:11px}
+.riskBadge{padding:9px 12px;border-radius:999px;font-weight:700;font-size:12px}.riskBadge.high{background:#fee4e2}.riskBadge.medium{background:#fff1cc}.riskBadge.low{background:#dcfce7}
+.reportSection{padding:16px 0;border-top:1px solid var(--border,#e5e7eb)}.reportSection h3{margin-top:0}.reportSection p{font-size:13px;line-height:1.65}
+.reportColumns{display:grid;grid-template-columns:1fr 1fr;gap:14px}.reportBox{border:1px solid var(--border,#e5e7eb);border-radius:14px;padding:16px}.reportBox h3{margin-top:0}
+.trendList{display:grid;grid-template-columns:1fr 1fr;gap:8px}.trendList>div{padding:10px;border-radius:10px;background:var(--panel-soft,#fafafa);font-size:12px}
+.actionList{margin:0;padding-left:22px}.actionList li{padding:7px 0;font-size:13px;line-height:1.5}.methodology{opacity:.8;font-size:12px}
+@media(max-width:800px){.reportKpis,.reportColumns,.trendList{grid-template-columns:1fr}}
+
+
+/* NFI v7 — Mes dossiers + FEC Copilot */
+.dossiersHero{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 20px}
+.dossiersHero>div{border:1px solid var(--border,#e5e7eb);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:5px;background:var(--panel,#fff)}
+.dossiersHero span{font-size:11px;text-transform:uppercase;letter-spacing:.04em;opacity:.65}
+.dossiersHero strong{font-size:20px}.dossiersHero small{font-size:11px;opacity:.7}
+.fecInsightPanel{margin:18px 0;border:1px solid var(--border,#e5e7eb);border-radius:16px;padding:18px;background:var(--panel,#fff)}
+.fecInsightGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.fecInsightGrid>div{padding:14px;border-radius:12px;background:var(--panel-soft,#fafafa);display:flex;flex-direction:column;gap:6px}
+.fecInsightGrid strong{font-size:13px}.fecInsightGrid span{font-size:11px;line-height:1.45;opacity:.75}
+@media(max-width:900px){.dossiersHero{grid-template-columns:1fr}.fecInsightGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.fecInsightGrid{grid-template-columns:1fr}}
+
+
+/* NFI v8 — cockpit Mes dossiers + Copilote FEC */
+.portfolioCommandBar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 17px;margin:12px 0;border:1px solid var(--border,#e5e7eb);border-radius:14px;background:var(--panel,#fff)}
+.portfolioCommandBar>div{display:flex;flex-direction:column;gap:3px}.portfolioCommandBar b{font-size:16px}.portfolioCommandBar span{font-size:11px;opacity:.7}.portfolioQuick{display:flex!important;flex-direction:row!important;gap:8px!important}.portfolioQuick span{padding:7px 9px;border-radius:999px;background:var(--panel-soft,#fafafa)}
+.fecCausePanel{margin-top:16px;padding-top:16px;border-top:1px solid var(--border,#e5e7eb)}.fecIntro{font-size:12px;line-height:1.5;opacity:.75}
+.fecCauseGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.fecCause{padding:13px;border-radius:12px;border:1px solid var(--border,#e5e7eb)}.fecCause b{font-size:13px}.fecCause p{font-size:12px;line-height:1.5;margin-bottom:0}
+.fecCause.good{border-left:3px solid var(--success,#16803c)}.fecCause.warning{border-left:3px solid #c58a00}.fecCause.bad{border-left:3px solid var(--danger,#b42318)}
+.fecDrivers{margin-top:14px}.fecDrivers h4{margin:0 0 8px}.fecDrivers>div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border,#eee);font-size:12px}
+@media(max-width:800px){.portfolioCommandBar{align-items:flex-start;flex-direction:column}.fecCauseGrid{grid-template-columns:1fr}}
+
+.primaryAction{display:inline-flex;align-items:center;gap:7px;border:0;border-radius:9px;padding:10px 14px;background:#1979b7;color:#fff;font-weight:700;cursor:pointer}
+.primaryAction:disabled{opacity:.6;cursor:wait}
+.reportPage .deepMetric{border:1px solid #e2e9ef;border-radius:10px;padding:14px;background:#fff}
+.reportPage .deepMetric span{display:block;color:#7b8b9d;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.reportPage .deepMetric b{display:block;font-size:22px;margin-top:6px}
+.reportPage .notice{display:flex;align-items:flex-start;gap:8px;margin-top:14px}
+
+/* NFI v10 — cockpit portefeuille, score explicable, qualité et rapport */
+.portfolioAttention{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 16px}.attentionCard{border:1px solid #ead8d5;border-left:4px solid #b85b57;background:#fff;border-radius:12px;padding:13px;display:flex;justify-content:space-between;align-items:center;text-align:left;cursor:pointer}.attentionCard span{display:block;font-size:8px;font-weight:900;letter-spacing:1px;color:#a5524d}.attentionCard b{display:block;font-size:14px;color:#243b54;margin-top:3px}.attentionCard small{display:block;font-size:10px;color:#7b8b9a;margin-top:2px}.attentionCard>strong{font-size:18px;color:#a5524d}.compactEmpty{padding:18px;margin-bottom:16px}.recentScore{font-size:11px;font-weight:800;color:#55758a;margin-left:auto;margin-right:12px}.dashboardScoreGrid{display:grid;grid-template-columns:1.35fr .65fr;gap:14px;margin-bottom:14px}.scoreExplainHead{display:flex;justify-content:space-between;align-items:center;gap:12px}.scoreExplainHead h2{margin:4px 0 0;font-size:25px}.scoreExplainHead h2 span{font-size:11px;font-weight:700;color:#668094;margin-left:6px}.scoreBars{margin-top:12px}.scoreBars>div{margin:10px 0}.scoreBars>div>div:first-child{display:flex;justify-content:space-between;font-size:10px}.scoreBars b{font-size:9px;color:#6d8192}.scoreBar{height:7px;background:#edf1f4;border-radius:5px;margin-top:5px;overflow:hidden}.scoreBar i{display:block;height:100%;background:#3e809f;border-radius:5px}.qualityState{padding:12px;border-radius:10px;display:flex;flex-direction:column;gap:3px}.qualityState.ok{background:#eef7f1}.qualityState.warning{background:#fff7e9}.qualityState strong{font-size:13px}.qualityState span{font-size:10px;color:#6f8190}.qualityList{list-style:none;padding:0;margin:12px 0 0}.qualityList li{font-size:10px;padding:7px 0;border-bottom:1px solid #edf1f4;color:#627687}.reportFeatureGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.reportFeatureGrid>div{border:1px solid #e0e7ec;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:5px}.reportFeatureGrid svg{color:#2a789e}.reportFeatureGrid b{font-size:10px}.reportFeatureGrid span{font-size:9px;color:#788a99;line-height:1.4}@media(max-width:950px){.portfolioAttention,.reportFeatureGrid{grid-template-columns:1fr 1fr}.dashboardScoreGrid{grid-template-columns:1fr}}@media(max-width:620px){.portfolioAttention,.reportFeatureGrid{grid-template-columns:1fr}}
+
+/* NOVACAB base mark */
+.brand{display:flex!important;align-items:center!important;gap:10px!important;}
+.brandVisual{width:38px;height:38px;display:grid;place-items:center;flex:none;}
+.brandVisual img{width:36px;height:36px;object-fit:contain;display:block;}
+.brandWord{font-size:21px;line-height:1;font-weight:900;letter-spacing:-1.5px;color:var(--nfi-navy);}
+.brandSub{margin-top:5px!important;}
+.topbarTitle{display:flex;align-items:center;gap:10px;}
+.topbarMark{width:25px;height:25px;object-fit:contain;display:block;}
+
+/* NOVACAB UI — shared brand lock */
+.brandWord{color:#fff!important}.brandWord::first-letter{color:#fff}.brandWord{letter-spacing:-.4px}.brandSub{color:#7e91ab!important}.brandVisual img,.topbarMark{object-fit:contain}.topbarBrand{color:#162338!important}.topbarTitle b{color:#152238}.sidebar{background:linear-gradient(180deg,#0d1b30,#10243e)!important}.nav.active{background:#1d4169!important;box-shadow:inset 3px 0 #55b5ff!important}.nav:hover{background:#172f50!important}.topbar{border-bottom:1px solid #e4eaf2!important}.topbarMark{width:34px!important;height:34px!important}.topbarBrand{font-weight:800}
+
+/* NOVACAB THEME — clair / sombre / système */
+:root{--nc-navy:#0d1b30;--nc-navy-2:#10243e;--nc-blue:#55b5ff;--nc-bg:#f5f7fb;--nc-card:#fff;--nc-soft:#f3f6fb;--nc-line:#e4eaf2;--nc-ink:#162338;--nc-muted:#718096}
+.dark{--nc-bg:#0b1220;--nc-card:#111b2d;--nc-soft:#17243a;--nc-line:#2b3b55;--nc-ink:#f4f7fb;--nc-muted:#aebbd0}
+.dark body{background:var(--nc-bg)!important;color:#f4f7fb!important}.dark .topbar{background:#0f1929!important;border-color:#2b3b55!important;box-shadow:0 3px 16px rgba(0,0,0,.25)}.dark .topbarTitle b,.dark .topbarBrand{color:#fff!important}.dark .topbarTitle{color:#f4f7fb}.dark .topSearch{background:#111b2d!important;border-color:#2b3b55!important;color:#dce6f2}.dark .topSearch input{background:transparent!important;color:#f4f7fb!important}.dark .topSearch input::placeholder{color:#8292aa}.dark .profileButton{background:#111b2d!important;border-color:#2b3b55!important;color:#f4f7fb!important}.dark .profileButton b{color:#fff!important}.dark .profileButton small{color:#aebbd0!important}.dark .accountMenu{background:#111b2d!important;border-color:#2b3b55!important}.dark .accountMenuHead{border-color:#2b3b55!important}.dark .accountMenuHead b{color:#fff}.dark .accountMenuHead small{color:#aebbd0}.dark .accountStatus{background:#143426!important;color:#cdebdc!important}.dark .accountAppearance{background:transparent!important;color:#f4f7fb!important;border-color:#2b3b55!important}.dark .accountAppearance small{color:#aebbd0}.dark .panel,.dark .card,.dark .dossiersHero>div,.dark .fecInsightPanel,.dark .fecInsightGrid>div,.dark .diagnosticBox,.dark .diagnosticItem,.dark .narrativeSummary,.dark .narrativeGrid article,.dark .reportBox,.dark .reportKpis>div,.dark .portfolioCommandBar,.dark .fecCause,.dark .attentionCard,.dark .reportFeatureGrid>div{background:#111b2d!important;border-color:#2b3b55!important;color:#f4f7fb}.dark .panel-soft,.dark .qualityState,.dark .trendList>div,.dark .actionPlan>div{background:#142238!important}.dark .panel h1,.dark .panel h2,.dark .panel h3,.dark .panel h4,.dark .panel b,.dark .card h1,.dark .card h2,.dark .card h3,.dark .card h4{color:#f4f7fb}.dark .panel p,.dark .panel span,.dark .panel small,.dark .card p,.dark .card span,.dark .card small,.dark li{color:#c7d2e1}.dark .riskBadge.low{background:#143426;color:#71d3aa}.dark .riskBadge.medium{background:#3a2b12;color:#ffc66d}.dark .riskBadge.high{background:#3b171a;color:#ff8c86}.dark table th{background:#0d1b30!important;color:#fff}.dark table td{border-color:#2b3b55!important;color:#dce6f2}.dark .attentionCard b{color:#f4f7fb}.dark .attentionCard small{color:#aebbd0}.dark .theme-trigger{background:#111b2d;color:#f4f7fb;border-color:#2b3b55}.dark .theme-menu{background:#111b2d;border-color:#2b3b55}.dark .theme-menu button{color:#f4f7fb}.dark .theme-menu button small{color:#9eacc0}.theme-control{position:relative;display:inline-flex}.theme-trigger{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--nc-line);background:var(--nc-card);color:var(--nc-ink);padding:7px 10px;border-radius:9px;font-size:10.5px;font-weight:800;cursor:pointer}.theme-trigger:hover{background:var(--nc-soft);border-color:var(--nc-blue)}.theme-menu{position:absolute;right:0;top:calc(100% + 8px);width:230px;padding:8px;background:var(--nc-card);border:1px solid var(--nc-line);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.16);z-index:200}.theme-menu-title{padding:7px 9px 9px;color:var(--nc-ink);font-size:11px;font-weight:900}.theme-menu button{width:100%;display:grid;grid-template-columns:24px 1fr auto;gap:9px;align-items:center;text-align:left;border:0;background:transparent;color:var(--nc-ink);padding:9px;border-radius:9px;cursor:pointer}.theme-menu button:hover,.theme-menu button.selected{background:var(--nc-soft)}.theme-menu button>span{font-size:15px;text-align:center}.theme-menu button b,.theme-menu button small{display:block}.theme-menu button b{font-size:10.5px}.theme-menu button small{font-size:8.5px;color:var(--nc-muted);margin-top:2px}.theme-menu button>strong{color:var(--nc-blue)}.accountAppearance{width:100%;display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--nc-line);border-radius:10px;background:var(--nc-soft);color:var(--nc-ink);margin:8px 0;cursor:pointer;text-align:left}.accountAppearance span{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:var(--nc-card);font-size:14px}.accountAppearance b,.accountAppearance small{display:block}.accountAppearance b{font-size:11px}.accountAppearance small{font-size:9px;color:var(--nc-muted);margin-top:2px}
+.brandWord span,.brandNOVA{color:#55b5ff!important}.brandWord{color:#fff!important}.brandCAB{color:#55b5ff!important}.topbarBrand{display:inline-flex;align-items:center;gap:0}.dark .topbarBrand{color:#fff!important}
+
+/* NOVACAB shell lock — Insight uses the exact master cockpit shell palette */
+:root:not(.dark) .sidebar{width:258px!important;background:#fff!important;color:#334155;border-right:1px solid #d8e0ec;box-shadow:none}
+:root:not(.dark) .brandWord{color:#162338!important}.brandWord span{color:#55b5ff!important}
+:root:not(.dark) .brandSub{color:#7183a0!important}
+:root:not(.dark) .navCaption{color:#17345f!important}
+:root:not(.dark) .nav{color:#64748b!important;background:transparent!important}
+:root:not(.dark) .nav:hover{background:#f3f6fb!important;color:#17345f!important}
+:root:not(.dark) .nav.active{background:#eaf0f8!important;color:#17345f!important;box-shadow:inset 3px 0 #55b5ff!important}
+:root:not(.dark) .sidebarBottom{border-color:#d8e0ec!important;color:#7183a0!important}
+:root:not(.dark) .main{margin-left:258px!important;background:#f5f7fb!important}
+:root:not(.dark) .topbar{background:#fff!important;border-color:#e4eaf2!important}
+:root:not(.dark) .topbarBrand{color:#162338!important}.topbarBrand .brandNOVA{color:#162338!important}.topbarBrand .brandCAB{color:#55b5ff!important}
+:root:not(.dark) .topbarTitle b{color:#43536b!important}
+:root:not(.dark) .topSearch{background:#f7f9fc!important;border-color:#e1e7ef!important}
+:root:not(.dark) .panel,
+:root:not(.dark) .statCard,
+:root:not(.dark) .kpi,
+:root:not(.dark) .companyCard,
+:root:not(.dark) .homeRecent,
+:root:not(.dark) .dossiersHero>div,
+:root:not(.dark) .fecInsightPanel,
+:root:not(.dark) .fecInsightGrid>div,
+:root:not(.dark) .diagnosticBox,
+:root:not(.dark) .diagnosticItem,
+:root:not(.dark) .narrativeSummary,
+:root:not(.dark) .narrativeGrid article,
+:root:not(.dark) .reportBox,
+:root:not(.dark) .reportKpis>div,
+:root:not(.dark) .portfolioCommandBar,
+:root:not(.dark) .fecCause,
+:root:not(.dark) .attentionCard,
+:root:not(.dark) .reportFeatureGrid>div{background:#fff!important;border-color:#d8e0ec!important}
+:root:not(.dark) .panel-soft,
+:root:not(.dark) .qualityState,
+:root:not(.dark) .trendList>div,
+:root:not(.dark) .actionPlan>div{background:#f7f9fc!important}
+:root:not(.dark) .theme-trigger{background:#fff;color:#162338;border-color:#d8e0ec}
+@media(max-width:760px){.sidebar{width:100%!important}.main{margin-left:0!important}}
+
+/* NOVACAB Insight — dark mode parity with the master cockpit */
+.dark .main,
+.dark .content,
+.dark .homePage,
+.dark .page,
+.dark .pageHero,
+.dark .toolbar,
+.dark .dossiersHero,
+.dark .companyGrid,
+.dark .analysisCards,
+.dark .dashboardGrid,
+.dark .homeCards,
+.dark .kpis,
+.dark .portfolioAttention,
+.dark .portfolioTable,
+.dark .recognized,
+.dark .importHero,
+.dark .benchmarkHero,
+.dark .companyBanner{background:var(--nc-bg)!important;color:var(--nc-ink)!important}
+
+.dark h1,.dark h2,.dark h3,.dark h4,.dark h5,.dark h6,
+.dark .content h1,.dark .content h2,.dark .content h3,
+.dark .pageHero h1,.dark .pageHero h2{color:#f7f9fc!important}
+.dark p,.dark .content p,.dark .eyebrow,.dark label,
+.dark .toolbarHint,.dark .yearSelect label{color:#cbd5e1!important}
+
+.dark .panel,.dark .card,.dark .statCard,.dark .kpi,.dark .companyCard,
+.dark .homeRecent,.dark .homeCard,.dark .dossiersHero>div,
+.dark .fecInsightPanel,.dark .fecInsightGrid>div,.dark .diagnosticBox,
+.dark .diagnosticItem,.dark .narrativeSummary,.dark .narrativeGrid article,
+.dark .reportBox,.dark .reportKpis>div,.dark .portfolioCommandBar,
+.dark .fecCause,.dark .attentionCard,.dark .reportFeatureGrid>div,
+.dark .ratioGrid>div,.dark .deepMetric,.dark .notice,
+.dark .searchBox,.dark .recognizedRow,.dark .uploadIcon,
+.dark .qualityList li,.dark .signalList>div,.dark .trendList>div,
+.dark .actionPlan>div{background:#111b2d!important;border-color:#2b3b55!important;color:#f4f7fb!important}
+
+.dark .companyCard .cardMain,.dark .cardMain,.dark .portfolioRow,
+.dark .privacyButton,.dark .recentRow,.dark .homeCard button,
+.dark .linkButton,.dark .secondary,.dark .yearSelect select,
+.dark .searchBox input{background:#111b2d!important;color:#f4f7fb!important;border-color:#2b3b55!important}
+.dark .cardMain:hover,.dark .portfolioRow:hover,.dark .privacyButton:hover,
+.dark .recentRow:hover,.dark .homeCard button:hover{background:#17243a!important}
+.dark .cardFooter,.dark .tableHeader,.dark .portfolioRow,
+.dark .attentionItem,.dark .signalList>div,.dark .fecCausePanel,
+.dark .ratioGrid,.dark .companyCard .cardFooter{border-color:#2b3b55!important}
+.dark .cardText small,.dark .cardFooter,.dark .cardFooter b,
+.dark .statCard span,.dark .statCard small,.dark .kpiLabel,.dark .kpiSub,
+.dark .companyCard p,.dark .companyCard small,.dark .toolbarHint{color:#aebbd0!important}
+.dark .companyIdentity,.dark .portfolioRow,.dark .recentRow,
+.dark .cardMain,.dark .homeCard,.dark .homeCard h2{color:#f4f7fb!important}
+.dark .avatar,.dark .bigAvatar,.dark .largeAvatar,.dark .signalIcon{background:#17304d!important;color:#7fc8ff!important}
+.dark .searchBox{color:#cbd5e1!important}
+.dark .searchBox input::placeholder{color:#8798b0!important}
+.dark input,.dark select,.dark textarea{background:#111b2d!important;color:#f4f7fb!important;border-color:#2b3b55!important}
+.dark input::placeholder,.dark textarea::placeholder{color:#8798b0!important}
+.dark table,.dark table tr,.dark table td,.dark table th{background:#111b2d!important;color:#e9eef6!important;border-color:#2b3b55!important}
+.dark table th{background:#0d1b30!important;color:#fff!important}
+.dark .scoreBar{background:#25354d!important}
+.dark .notice{color:#dce6f2!important}
+.dark .notice.warningNotice{background:#3a2b12!important;border-color:#725522!important;color:#ffe0a3!important}
+.dark .emptyState,.dark .compactEmpty{background:#111b2d!important;border-color:#2b3b55!important;color:#cbd5e1!important}
+.dark .companyBanner,.dark .benchmarkHero{color:#fff!important}
+.dark .companyBanner p,.dark .benchmarkHero p{color:#c7d7e8!important}
+.dark .companyBanner .eyebrow,.dark .benchmarkHero span{color:#9db7d2!important}
+.dark .theme-menu,.dark .accountMenu{background:#111b2d!important;color:#f4f7fb!important}
+.dark .theme-menu-title,.dark .theme-menu button b,.dark .accountMenu b{color:#f4f7fb!important}
+.dark .theme-menu button small,.dark .accountMenu small{color:#aebbd0!important}
+
+/* NOVACAB logo final lock — no white NOVA in light mode */
+.brandWord .brandNOVA{color:#162338!important;}
+.brandWord .brandCAB{color:#55b5ff!important;}
+.topbarBrand .brandNOVA{color:#162338!important;}
+.topbarBrand .brandCAB{color:#55b5ff!important;}
+
+/* FINAL NOVACAB wordmark lock: NOVA is dark navy, CAB is NOVACAB blue. */
+.brandWord,
+.brandWord .brandNOVA,
+.brandWord .brandNOVA::first-letter,
+.topbarBrand .brandNOVA,
+.topbarBrand .brandNOVA::first-letter {
+  color: #162338 !important;
+  -webkit-text-fill-color: #162338 !important;
+}
+.brandWord .brandCAB,
+.topbarBrand .brandCAB {
+  color: #55b5ff !important;
+  -webkit-text-fill-color: #55b5ff !important;
+}
+
+/* Multi-cabinets Insight */
+.portfolioScope{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.portfolioScope>div:first-child{display:flex;align-items:center;gap:10px}.portfolioPicker{display:flex!important;align-items:center;gap:6px;flex-wrap:wrap}.portfolioPicker>span{font-size:9px;font-weight:800;color:#7d8da0;text-transform:uppercase;letter-spacing:.5px}.portfolioPicker button{border:1px solid #e3eaf0;background:#fff;color:#627487;border-radius:999px;padding:7px 10px;font-size:9px;font-weight:800;cursor:pointer}.portfolioPicker button.selected{background:#edf6fd;border-color:#b9dcf6;color:#176fae}.portfolioPicker button:hover{border-color:#9fcce9;color:#176fae}
+@media(max-width:900px){.portfolioScope{align-items:flex-start;flex-direction:column}}
+
+.cabinetComparisonPanel{margin:0 0 16px}.cabinetComparisonGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.cabinetComparisonGrid article{border:1px solid #e4ebf0;border-radius:12px;padding:13px;background:#fbfdff}.cabinetComparisonGrid article>div{display:flex;justify-content:space-between;gap:8px;align-items:center}.cabinetComparisonGrid article>div b{font-size:12px;color:#243b54}.cabinetComparisonGrid article>div span{font-size:9px;color:#8190a0}.cabinetComparisonGrid dl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0 0}.cabinetComparisonGrid dt{font-size:8px;color:#8291a0}.cabinetComparisonGrid dd{font-size:11px;font-weight:900;color:#1d334b;margin:3px 0 0}.dark .cabinetComparisonGrid article{background:#111b2d!important;border-color:#2b3b55!important}.dark .cabinetComparisonGrid article>div b,.dark .cabinetComparisonGrid dd{color:#f4f7fb}.dark .cabinetComparisonGrid dt,.dark .cabinetComparisonGrid article>div span{color:#aebbd0}

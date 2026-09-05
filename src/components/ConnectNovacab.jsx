@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {UploadCloud, FileCheck2, AlertCircle, Building2, ArrowRight, ShieldCheck, Users, Link2, PlusCircle, RefreshCcw} from "lucide-react";
+import {UploadCloud, FileCheck2, AlertCircle, Building2, ArrowRight, ShieldCheck, Link2, PlusCircle, RefreshCcw} from "lucide-react";
 import {parseNovacabWorkbook, buildConnectionPlan, applyConnectionPlan} from "../services/novacabConnect";
 import {saveCompany} from "../services/nfiRepository";
 
@@ -44,7 +44,7 @@ export default function ConnectNovacab({companies, users, assignments, onCompani
       onUsersChange(result.users);
       onAssignmentsChange(result.assignments);
       setApplied(true);
-      setStatus({type: "success", text: "Connexion appliquée : dossiers, NAF et organigramme mis à jour."});
+      setStatus({type: "success", text: "Connexion appliquée : dossiers, NAF et dossiers mis à jour."});
     } catch (err) {
       setStatus({type:"error", text:err.message || "Synchronisation impossible."});
     }
@@ -55,7 +55,7 @@ export default function ConnectNovacab({companies, users, assignments, onCompani
       <div>
         <div className="eyebrow">DONNÉES · CONNECTEUR</div>
         <h1>Compléter la connexion Novacab</h1>
-        <p>NFI est déjà connecté au même Supabase que Novacab : les dossiers et collaborateurs du cabinet sont chargés automatiquement. Cet import Excel reste disponible uniquement pour enrichir ou reprendre un ancien rapprochement.</p>
+        <p>NOVACAB Insight est déjà connecté au même Supabase que Novacab : les dossiers et collaborateurs du cabinet sont chargés automatiquement. Cet import Excel reste disponible uniquement pour enrichir ou reprendre un ancien rapprochement.</p>
       </div>
     </header>
 
@@ -97,7 +97,7 @@ export default function ConnectNovacab({companies, users, assignments, onCompani
       {(plan.teamMatched.length > 0 || plan.teamNew.length > 0) && <div className="detailBlock">
         <h3><Users size={13}/> Organigramme</h3>
         <div className="miniAccessList">
-          {plan.teamMatched.map(t => <div key={`m-${t.name}`}><span>{t.name}</span><small>{t.role} · déjà présent dans NFI</small></div>)}
+          {plan.teamMatched.map(t => <div key={`m-${t.name}`}><span>{t.name}</span><small>{t.role} · déjà présent dans NOVACAB Insight</small></div>)}
           {plan.teamNew.map(t => <div key={`n-${t.name}`}><span>{t.name}</span><small>{t.role} · à créer</small></div>)}
         </div>
       </div>}
@@ -106,10 +106,10 @@ export default function ConnectNovacab({companies, users, assignments, onCompani
     </section>}
 
     {applied && <section className="panel">
-      <div className="notice qualityOk"><FileCheck2 size={14}/><div>Les dossiers, le NAF et l'organigramme sont à jour. Les nouveaux dossiers "en attente de FEC" apparaissent dans <b>Mes dossiers</b> ; ouvrez-les pour importer leur FEC dès qu'il sera disponible.</div></div>
+      <div className="notice qualityOk"><FileCheck2 size={14}/><div>Les dossiers et le NAF sont à jour. Les nouveaux dossiers "en attente de FEC" apparaissent dans <b>Mes dossiers</b> ; ouvrez-les pour importer leur FEC dès qu'il sera disponible.</div></div>
       <div style={{display: "flex", gap: 10, marginTop: 12}}>
         <button className="secondaryAction" onClick={() => onDone?.("companies")}><Building2 size={14}/> Voir mes dossiers</button>
-        <button className="secondaryAction" onClick={() => onDone?.("organization")}><Users size={14}/> Voir l'organigramme</button>
+        <button className="secondaryAction" onClick={() => onDone?.("companies")}><Building2 size={14}/> Voir mes dossiers</button>
         <button className="secondaryAction" onClick={() => { setPlan(null); setParsed(null); setApplied(false); setStatus(null); }}><RefreshCcw size={14}/> Nouvelle connexion</button>
       </div>
     </section>}

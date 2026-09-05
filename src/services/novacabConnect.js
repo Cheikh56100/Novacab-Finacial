@@ -93,7 +93,7 @@ export async function parseNovacabWorkbook(file) {
 export function buildConnectionPlan({clients, team}, companies = [], users = []) {
   const bySiren = new Map(companies.filter(c => normSiren(c.siren)).map(c => [normSiren(c.siren), c]));
 
-  const matches = [];       // dossiers NFI existants à enrichir (NAF/secteur)
+  const matches = [];       // dossiers NOVACAB Insight existants à enrichir (NAF/secteur)
   const newPending = [];    // nouveaux dossiers "en attente de FEC"
   const skipped = [];       // lignes sans SIREN exploitable
   const clientsForAssignment = [];

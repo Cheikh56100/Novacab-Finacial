@@ -52,7 +52,7 @@ export default function Organization({cloudMode=false, companies, assignments={}
   };
 
   const addUser = () => {
-    if (cloudMode) { saveNotice("Les comptes collaborateurs se créent dans NOVACAB puis apparaissent automatiquement dans NFI."); return; }
+    if (cloudMode) { saveNotice("Les comptes collaborateurs se créent dans NOVACAB puis apparaissent automatiquement dans NOVACAB Insight."); return; }
     const name = newUser.name.trim();
     if (!name) return;
     const id = `u-${Date.now().toString(36)}${Math.random().toString(36).slice(2,5)}`;

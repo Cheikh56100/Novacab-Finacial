@@ -1,16 +1,17 @@
 import React,{useMemo,useState} from "react";
-import {AlertTriangle, ArrowUpRight, ChevronRight, Eye, LockKeyhole, Search, ShieldCheck, ArrowDownRight, CheckSquare, FileText, Info} from "lucide-react";
+import {AlertTriangle, ArrowUpRight, ChevronRight, LockKeyhole, ShieldCheck, ArrowDownRight, CheckSquare, FileText, Info} from "lucide-react";
 import {ratios, financialScore} from "../services/financialEngine";
 import ExportButtons from "./ExportButtons";
 import {ResponsiveContainer,AreaChart,Area,XAxis,YAxis,Tooltip,PieChart,Pie,Cell} from "recharts";
 const eur=n=>new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(n||0)+" €";
 const shortEur=n=>new Intl.NumberFormat("fr-FR",{notation:"compact",maximumFractionDigits:0}).format(n||0)+" €";
 const monthLabels=["Juin","Juil.","Août","Sept."];
-export default function Portfolio({companies,onOpen,role="Expert-comptable",assignments={},confidentialAccess={},userId,users=[]}){
- const [query,setQuery]=useState(""); const [scope,setScope]=useState("mine");
+export default function Portfolio({companies,onOpen,role="Expert-comptable",assignments={},confidentialAccess={},userId,users=[],portfolios=[],selectedPortfolioIds=[],onPortfolioChange}){
+ const [query,setQuery]=useState("");
  const user=users.find(u=>u.id===userId)||users[0]||{id:userId,name:"—",role};
- const team=useMemo(()=>{const ids=[user.id];const walk=id=>users.filter(u=>u.managerId===id).forEach(u=>{ids.push(u.id);walk(u.id)});walk(user.id);return ids},[user.id,users]);
- const visibleBase=companies.filter(c=>{if(c.confidential)return (confidentialAccess[c.id]||[]).includes(user.id);if(scope==="cabinet")return user.role==="Expert-comptable";if(user.role==="Expert-comptable")return true;return (assignments[c.id]||[]).some(id=>team.includes(id));});
+ // Insight est volontairement transversal : tout membre actif du cabinet
+ // voit l’ensemble du portefeuille. Les droits métier restent gérés dans NOVACAB.
+ const visibleBase=companies;
  const visible=visibleBase.map(c=>({...c,__authorizedConfidential:c.confidential&&(confidentialAccess[c.id]||[]).includes(user.id)})).filter(c=>(c.name+" "+c.sector).toLowerCase().includes(query.toLowerCase()));
  const stats=useMemo(()=>visibleBase.reduce((a,c)=>{const y=c.years[Object.keys(c.years).map(Number).sort().at(-1)]||{};const s=financialScore(ratios(y));a.ca+=y.ca||0;a.scores.push(s);if(s<50)a.risk++;else if(s<65)a.watch++;return a},{ca:0,scores:[],risk:0,watch:0}),[visibleBase]);
  const avg=stats.scores.length?Math.round(stats.scores.reduce((a,b)=>a+b,0)/stats.scores.length):0;
@@ -19,8 +20,15 @@ export default function Portfolio({companies,onOpen,role="Expert-comptable",assi
  const pie=[{name:"Risque élevé",value:stats.risk,cls:"risk"},{name:"À surveiller",value:stats.watch,cls:"watch"},{name:"Stables",value:stable,cls:"stable"}];
  const attention=visibleBase.map(c=>{const y=c.years[Object.keys(c.years).map(Number).sort().at(-1)]||{};const s=financialScore(ratios(y));return {c,y,s}}).filter(x=>x.s<65).sort((a,b)=>a.s-b.s).slice(0,5);
  return <main className="content dashboardContent">
-  <header className="pageHero dashboardHero"><div><div className="eyebrow">NFI · VUE PORTEFEUILLE</div><h1>Bonjour {user.name?.split(" ")[0]||""} 👋</h1><p>Voici la synthèse de votre portefeuille au {new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"long",year:"numeric"}).format(new Date())}.</p></div><div className="heroActions"><ExportButtons companies={visibleBase} mode="portfolio"/><button className="primary" onClick={()=>onOpen("import")}>＋ Importer un FEC</button></div></header>
-  <section className="portfolioScope"><button className={scope==="mine"?"active":""} onClick={()=>setScope("mine")}><Eye size={14}/> Mon périmètre</button>{user.role==="Expert-comptable"&&<button className={scope==="cabinet"?"active":""} onClick={()=>setScope("cabinet")}><ShieldCheck size={14}/> Vue cabinet</button>}<span className="scopeNote"><LockKeyhole size={12}/> Les dossiers confidentiels restent soumis aux autorisations nominatives.</span></section>
+  <header className="pageHero dashboardHero"><div><div className="eyebrow">NOVACAB INSIGHT · VUE PORTEFEUILLE</div><h1>Bonjour {user.name?.split(" ")[0]||""} 👋</h1><p>Voici la synthèse de votre portefeuille au {new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"long",year:"numeric"}).format(new Date())}.</p></div><div className="heroActions"><ExportButtons companies={visibleBase} mode="portfolio"/><button className="primary" onClick={()=>onOpen("import")}>＋ Importer un FEC</button></div></header>
+  <section className="portfolioCommandBar">
+    <div><b>Portefeuille cabinet</b><span>Un cockpit unique pour retrouver une société, suivre son risque et ouvrir son diagnostic.</span></div>
+    <div className="portfolioQuick"><span>Recherche</span><span>Risques</span><span>Suivi</span></div>
+  </section>
+  <section className="portfolioScope">
+   <div><span className="scopeActive"><ShieldCheck size={14}/> Portefeuilles Insight</span><span className="scopeNote"><LockKeyhole size={12}/> Vue transversale réservée aux organisations auxquelles vous êtes autorisé.</span></div>
+   {portfolios.length>1&&<div className="portfolioPicker"><span>Comparer</span><button className={selectedPortfolioIds.length===portfolios.length?"selected":""} onClick={()=>onPortfolioChange?.(portfolios.map(p=>p.id))}>Tous mes cabinets</button>{portfolios.map(p=><button key={p.id} className={selectedPortfolioIds.includes(p.id)?"selected":""} onClick={()=>{const next=selectedPortfolioIds.includes(p.id)?selectedPortfolioIds.filter(x=>x!==p.id):[...selectedPortfolioIds,p.id];onPortfolioChange?.(next.length?next:[p.id])}}>{p.name}</button>)}</div>}
+  </section>
   <section className="portfolioStats modernStats">
    <div className="statCard statBlue"><div className="statTop"><span>Score moyen du portefeuille</span><Info size={13}/></div><strong>{avg}<em>/100</em></strong><small><span className="up">↗ +5 pts</span> vs mois dernier</small><div className="miniSpark blue"><span/></div></div>
    <div className="statCard statRed"><div className="statTop"><span>Dossiers à risque</span><Info size={13}/></div><strong>{stats.risk}</strong><small><span className="down">↗ +2</span> vs mois dernier</small><div className="miniSpark red"><span/></div></div>
@@ -35,10 +43,10 @@ export default function Portfolio({companies,onOpen,role="Expert-comptable",assi
    </div>
   </section>
   <section className="lowerDashGrid">
-   <div className="panel dashListPanel"><div className="panelHead"><div><h2>Alertes récentes</h2><p>Les derniers signaux détectés par NFI.</p></div><button className="linkButton" onClick={()=>onOpen("alerts")}>Voir tout</button></div>{attention.slice(0,3).map(({c,s,y})=><div className="dashboardListItem" key={c.id}><div className={`listIcon ${s<50?"bad":"warn"}`}>{s<50?<AlertTriangle size={15}/>:<ArrowUpRight size={15}/>}</div><div><b>{s<50?"Trésorerie ou risque financier élevé":"Dégradation à surveiller"}</b><small>{c.name}</small></div><span>Il y a {Math.max(1,Math.round((65-s)*1.4))} h</span><ChevronRight size={14}/></div>)}{!attention.length&&<div className="emptyState">Aucune alerte importante dans votre périmètre.</div>}</div>
+   <div className="panel dashListPanel"><div className="panelHead"><div><h2>Alertes récentes</h2><p>Les derniers signaux détectés par NOVACAB Insight.</p></div><button className="linkButton" onClick={()=>onOpen("alerts")}>Voir tout</button></div>{attention.slice(0,3).map(({c,s,y})=><div className="dashboardListItem" key={c.id}><div className={`listIcon ${s<50?"bad":"warn"}`}>{s<50?<AlertTriangle size={15}/>:<ArrowUpRight size={15}/>}</div><div><b>{s<50?"Trésorerie ou risque financier élevé":"Dégradation à surveiller"}</b><small>{c.name}</small></div><span>Il y a {Math.max(1,Math.round((65-s)*1.4))} h</span><ChevronRight size={14}/></div>)}{!attention.length&&<div className="emptyState">Aucune alerte importante dans votre périmètre.</div>}</div>
    <div className="panel dashListPanel"><div className="panelHead"><div><h2>Dernières analyses</h2><p>Les analyses les plus récentes.</p></div><button className="linkButton" onClick={()=>onOpen("companies")}>Voir tout</button></div>{visible.slice(0,4).map(c=><button className="dashboardListItem listButton" key={c.id} onClick={()=>onOpen("company",c)}><div className="listIcon blue"><FileText size={15}/></div><div><b>{c.name}</b><small>Exercice {Object.keys(c.years).sort().at(-1)}</small></div><span>{new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date())}</span><ChevronRight size={14}/></button>)}</div>
-   <div className="panel dashListPanel"><div className="panelHead"><div><h2>À faire aujourd'hui</h2><p>Les actions recommandées par NFI.</p></div><button className="linkButton" onClick={()=>onOpen("alerts")}>Voir tout</button></div>{attention.slice(0,3).map(({c,s})=><button className="dashboardListItem listButton" key={c.id} onClick={()=>onOpen("company",c)}><span className="todoCheck"><CheckSquare size={15}/></span><div><b>{s<50?"Rendez-vous dirigeant":"Revue de marge"}</b><small>{c.name}</small></div><span className={`priorityTag ${s<50?"high":"medium"}`}>{s<50?"Priorité haute":"Priorité moyenne"}</span></button>)}<div className="taskFooter">Voir toutes les actions ({Math.max(3,attention.length)})</div></div>
+   <div className="panel dashListPanel"><div className="panelHead"><div><h2>À faire aujourd'hui</h2><p>Les actions recommandées par NOVACAB Insight.</p></div><button className="linkButton" onClick={()=>onOpen("alerts")}>Voir tout</button></div>{attention.slice(0,3).map(({c,s})=><button className="dashboardListItem listButton" key={c.id} onClick={()=>onOpen("company",c)}><span className="todoCheck"><CheckSquare size={15}/></span><div><b>{s<50?"Rendez-vous dirigeant":"Revue de marge"}</b><small>{c.name}</small></div><span className={`priorityTag ${s<50?"high":"medium"}`}>{s<50?"Priorité haute":"Priorité moyenne"}</span></button>)}<div className="taskFooter">Voir toutes les actions ({Math.max(3,attention.length)})</div></div>
   </section>
-  <footer className="nfiFooter"><span>NFI v1.3.0</span><span>© {new Date().getFullYear()} NFI · Intelligence financière</span></footer>
+  <footer className="nfiFooter"><span>NOVACAB Insight v1.3.0</span><span>© {new Date().getFullYear()} NOVACAB Insight · Intelligence financière</span></footer>
  </main>;
 }

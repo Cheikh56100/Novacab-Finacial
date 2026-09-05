@@ -1,4 +1,4 @@
-// Référentiel marché — source de vérité : classeur BON Codes NAF... fourni avec NFI.
+// Référentiel marché — source de vérité : référentiel fourni avec NOVACAB Insight.
 // Données 2024, reprises sans recalcul ni conversion.
 // Les montants sont conservés exactement tels qu'ils apparaissent dans le classeur.
 import { SECTOR_CATALOG } from "../data/sectorCatalog";

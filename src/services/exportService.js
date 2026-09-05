@@ -24,12 +24,12 @@ export function exportCompanyExcel(company) {
       "Dette / EBE": Number(r.debtEbe.toFixed(2)),
       "BFR / CA (%)": Number(r.bfrCa.toFixed(2)),
       "ROE (%)": Number(r.roe.toFixed(2)),
-      "Score NFI": financialScore(r)
+      "Score NOVACAB Insight": financialScore(r)
     };
   });
   const wb = XLSX.utils.book_new();
   const info = [
-    ["NFI — NOVACAB Financial Intelligence"],
+    ["NOVACAB Insight — Intelligence financière"],
     ["Société", company.name],
     ["SIREN", company.siren || ""],
     ["NAF", company.naf || ""],
@@ -50,9 +50,9 @@ export function exportCompanyExcel(company) {
     { Indicateur: "Dette / EBE", Valeur: r.debtEbe, Unite: "x" },
     { Indicateur: "BFR / CA", Valeur: r.bfrCa, Unite: "%" },
     { Indicateur: "ROE", Valeur: r.roe, Unite: "%" },
-    { Indicateur: "Score NFI", Valeur: financialScore(r), Unite: "/100" },
+    { Indicateur: "Score NOVACAB Insight", Valeur: financialScore(r), Unite: "/100" },
     { Indicateur: "Situation", Valeur: scoreLabel(financialScore(r)), Unite: "" }
-  ]), "Synthèse NFI");
+  ]), "Synthèse NOVACAB Insight");
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(diagnostics(company, latestYear(company)).map(x => ({ Niveau: x.level, Signal: x.title, Analyse: x.text }))), "Diagnostic");
   const filename = `NFI_${safe(company.name)}.xlsx`;
   XLSX.writeFile(wb, filename);
@@ -76,7 +76,7 @@ export function exportPortfolioExcel(companies = []) {
       "Dette / EBE": Number(r.debtEbe.toFixed(2)),
       "BFR / CA (%)": Number(r.bfrCa.toFixed(2)),
       "ROE (%)": Number(r.roe.toFixed(2)),
-      "Score NFI": score,
+      "Score NOVACAB Insight": score,
       Situation: scoreLabel(score),
       Confidentialité: company.confidential ? "Confidentiel" : "Standard"
     };
@@ -87,7 +87,7 @@ export function exportPortfolioExcel(companies = []) {
     a.ca += n(r["CA (€)"]); a.ebe += n(r["EBE (€)"]); a.treasury += n(r["Trésorerie (€)"]); a.count += 1; return a;
   }, {ca:0, ebe:0, treasury:0, count:0});
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([
-    ["NFI — Export portefeuille"],
+    ["NOVACAB Insight — Export portefeuille"],
     ["Date", new Date().toLocaleString("fr-FR")],
     ["Dossiers exportés", totals.count],
     ["CA portefeuille (€)", totals.ca],
@@ -105,28 +105,28 @@ export function printCompanyPdf(company) {
     return `<tr><td>${year}</td><td>${eur(y.ca)}</td><td>${eur(y.ebe)}</td><td>${pct(r.margin)}</td><td>${eur(y.treasury)}</td><td>${r.debtEbe.toFixed(1)}x</td><td>${score}/100</td></tr>`;
   }).join("");
   const latest = company.years[years.at(-1)] || {}; const r = ratios(latest); const score = financialScore(r);
-  openPrintWindow(`Analyse NFI — ${escapeHtml(company.name)}`, `
-    <div class="brand">NFI <span>NOVACAB Financial Intelligence</span></div>
+  openPrintWindow(`NOVACAB Insight — ${escapeHtml(company.name)}`, `
+    <div class="brand">NOVACAB <span>Insight · Intelligence financière</span></div>
     <h1>${escapeHtml(company.name)}</h1>
     <p class="muted">${escapeHtml(company.sector || "Secteur non renseigné")} · NAF ${escapeHtml(company.naf || "—")}</p>
-    <div class="hero"><div><small>SCORE NFI</small><strong>${score}<em>/100</em></strong><p>${scoreLabel(score)}</p></div><div><small>EXERCICE</small><strong>${years.at(-1) || "—"}</strong></div></div>
+    <div class="hero"><div><small>SCORE INSIGHT</small><strong>${score}<em>/100</em></strong><p>${scoreLabel(score)}</p></div><div><small>EXERCICE</small><strong>${years.at(-1) || "—"}</strong></div></div>
     <div class="grid">${card("Chiffre d'affaires", eur(latest.ca))}${card("EBE", eur(latest.ebe))}${card("Trésorerie", eur(latest.treasury))}${card("Dette / EBE", `${r.debtEbe.toFixed(1)} x`)}</div>
     <h2>Évolution financière</h2><table><thead><tr><th>Exercice</th><th>CA</th><th>EBE</th><th>Marge EBE</th><th>Trésorerie</th><th>Dette / EBE</th><th>Score</th></tr></thead><tbody>${rows}</tbody></table>
-    <h2>Diagnostic</h2><div class="diagnostic"><p><b>Rentabilité :</b> marge EBE ${pct(r.margin)}.</p><p><b>BFR / CA :</b> ${pct(r.bfrCa)}.</p><p><b>ROE :</b> ${pct(r.roe)}.</p><p><b>Lecture NFI :</b> ${r.margin >= 10 ? "La rentabilité opérationnelle constitue un point fort." : "La rentabilité mérite une analyse approfondie."} ${r.debtEbe < 2 ? "L'endettement reste maîtrisé." : "Le niveau de dette nécessite une surveillance particulière."}</p></div>
+    <h2>Diagnostic</h2><div class="diagnostic"><p><b>Rentabilité :</b> marge EBE ${pct(r.margin)}.</p><p><b>BFR / CA :</b> ${pct(r.bfrCa)}.</p><p><b>ROE :</b> ${pct(r.roe)}.</p><p><b>Lecture NOVACAB Insight :</b> ${r.margin >= 10 ? "La rentabilité opérationnelle constitue un point fort." : "La rentabilité mérite une analyse approfondie."} ${r.debtEbe < 2 ? "L'endettement reste maîtrisé." : "Le niveau de dette nécessite une surveillance particulière."}</p></div>
   `);
 }
 
-export function printPortfolioPdf(companies = [], title = "Portefeuille NFI") {
+export function printPortfolioPdf(companies = [], title = "Portefeuille NOVACAB Insight") {
   const rows = companies.map(company => {
     const year = latestYear(company); const y = company.years?.[year] || {}; const r = ratios(y); const score = financialScore(r);
     return `<tr><td>${escapeHtml(company.name)}</td><td>${escapeHtml(company.sector || "À classer")}</td><td>${eur(y.ca)}</td><td>${pct(r.margin)}</td><td>${eur(y.treasury)}</td><td>${score}/100</td></tr>`;
   }).join("");
   const total = companies.reduce((sum,c)=>sum+n(c.years?.[latestYear(c)]?.ca),0);
   openPrintWindow(title, `
-    <div class="brand">NFI <span>NOVACAB Financial Intelligence</span></div><h1>${escapeHtml(title)}</h1>
+    <div class="brand">NOVACAB <span>Insight · Intelligence financière</span></div><h1>${escapeHtml(title)}</h1>
     <p class="muted">Export du ${new Date().toLocaleString("fr-FR")} · ${companies.length} dossier(s) accessibles</p>
     <div class="hero"><div><small>DOSSIERS</small><strong>${companies.length}</strong></div><div><small>CA PORTEFEUILLE</small><strong>${eur(total)}</strong></div></div>
-    <h2>Portefeuille</h2><table><thead><tr><th>Société</th><th>Secteur</th><th>CA</th><th>Marge EBE</th><th>Trésorerie</th><th>Score NFI</th></tr></thead><tbody>${rows}</tbody></table>
+    <h2>Portefeuille</h2><table><thead><tr><th>Société</th><th>Secteur</th><th>CA</th><th>Marge EBE</th><th>Trésorerie</th><th>Score NOVACAB Insight</th></tr></thead><tbody>${rows}</tbody></table>
   `);
 }
 

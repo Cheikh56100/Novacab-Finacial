@@ -26,12 +26,19 @@ function clientData(client) {
 
 function dbClientToUi(row, exercises) {
   const meta = clientData(row);
-  const years = Object.fromEntries((exercises || []).map(e => [String(e.fiscal_year), {
-    ca:e.ca, ebe:e.ebe, rex:e.rex, valueAdded:e.value_added, net:e.net, treasury:e.treasury, debt:e.debt, bfr:e.bfr,
-    frng:e.frng, equity:e.equity, client:e.client, stock:e.stock, otherOperatingReceivables:e.other_operating_receivables,
-    otherOperatingLiabilities:e.other_operating_liabilities, currentAssets:e.current_assets, supplier:e.supplier,
-    currentLiabilities:e.current_liabilities, quality:e.quality || {}
-  }]));
+  const years = Object.fromEntries((exercises || []).map(e => {
+    const k=e.quality?.account_balances||{}; const bal=(prefixes)=>Object.entries(k).filter(([a])=>prefixes.some(p=>String(a).startsWith(p))).reduce((s,[,v])=>s+Number(v||0),0);
+    const equity=e.equity ?? (-bal(["10","11","12","13","14"]));
+    const debt=e.debt ?? (-bal(["16"]));
+    const treasury=e.treasury ?? bal(["512","53"]);
+    const client=e.client ?? Math.max(bal(["41"]),0); const stock=e.stock ?? Math.max(bal(["3"]),0);
+    const supplier=e.supplier ?? Math.max(-bal(["40"]),0);
+    const otherReceivables=e.other_operating_receivables ?? Math.max(bal(["42","43","44","45","46","48"]),0);
+    const otherLiabilities=e.other_operating_liabilities ?? Math.max(-bal(["42","43","44","45","46","48"]),0);
+    const currentAssets=e.current_assets ?? client+stock+otherReceivables+treasury; const currentLiabilities=e.current_liabilities ?? supplier+otherLiabilities;
+    const bfr=e.bfr ?? (client+stock+otherReceivables-supplier-otherLiabilities);
+    return [String(e.fiscal_year), {ca:e.ca, ebe:e.ebe, rex:e.rex, valueAdded:e.value_added, net:e.net, treasury, debt, bfr, frng:e.frng, equity, client, stock, otherOperatingReceivables:otherReceivables, otherOperatingLiabilities:otherLiabilities, currentAssets, supplier, currentLiabilities, quality:e.quality || {}, source:e.source, import_id:e.import_id}];
+  }));
   return {
     id: String(row.id),
     cabinetId: meta.portefeuilleId,
@@ -104,10 +111,14 @@ export async function getCurrentNovacabUser() {
   const { data, error } = await supabase.from("team")
     .select("id,nom,email,role,statut,portefeuille_id,auth_user_id,cabinet_nom")
     .eq("auth_user_id", user.id)
-    .maybeSingle();
+    .eq("statut", "actif")
+    .order("cabinet_nom", { ascending: true });
   if (error) throw error;
-  if (!data) return null;
-  return data;
+  if (!data?.length) return null;
+  // Compatibilité avec le reste de l'application : on conserve une fiche
+  // principale, mais loadNfiState travaille désormais sur TOUS les cabinets
+  // auxquels l'utilisateur est rattaché.
+  return {...data[0], accessiblePortfolios:data};
 }
 
 export async function loadNfiState() {
@@ -119,28 +130,64 @@ export async function loadNfiState() {
 
   const [
     { data: clientRows, error: clientError },
+    { data: portfolios, error: portfolioError },
+    { data: financialImports, error: importError },
     { data: exercises, error: exerciseError },
     { data: team, error: teamError },
     { data: confidential, error: confError }
   ] = await Promise.all([
     supabase.rpc("nfi_list_clients"),
-    supabase.from("nfi_exercises").select("*"),
+    supabase.rpc("nfi_list_portfolios"),
+    supabase.from("financial_imports").select("id,client_id,portefeuille_id,exercice,source_type,file_name,kpis,created_at").order("created_at", { ascending: false }),
+    supabase.from("nfi_exercises").select("*").order("fiscal_year", { ascending: false }),
     supabase.rpc("nfi_list_team"),
     supabase.from("nfi_confidential_access").select("client_id,user_id")
   ]);
 
-  const firstError = clientError || exerciseError || teamError || confError;
+  const firstError = clientError || portfolioError || importError || exerciseError || teamError || confError;
   if (firstError) throw firstError;
 
+  // Source financière de vérité : les imports déjà présents dans NOVACAB.
+  // On garde nfi_exercises en compatibilité pour les anciennes analyses NFI,
+  // mais un dossier qui possède déjà un FEC NOVACAB est immédiatement visible.
   const byClient = new Map();
+  (financialImports || []).forEach(fi => {
+    const clientId = String(fi.client_id);
+    const year = Number(fi.exercice || fi.kpis?.exercice || String(fi.kpis?.period_end || '').slice(0,4));
+    if (!Number.isFinite(year)) return;
+    const k = fi.kpis || {};
+    const arr = byClient.get(clientId) || [];
+    // Le premier import est le plus récent grâce au tri descendant.
+    if (!arr.some(x => Number(x.fiscal_year) === year)) arr.push({
+      fiscal_year: year, ca:k.ca ?? null, ebe:k.ebe ?? null, rex:k.rex ?? null,
+      value_added:k.valeur_ajoutee ?? k.value_added ?? null, net:k.resultat_net ?? k.net ?? null,
+      treasury:k.tresorerie_nette ?? k.treasury ?? null, debt:k.debt ?? null, bfr:k.bfr ?? null,
+      frng:k.frng ?? null, equity:k.equity ?? null, client:k.client ?? null, stock:k.stock ?? null,
+      other_operating_receivables:k.other_operating_receivables ?? null,
+      other_operating_liabilities:k.other_operating_liabilities ?? null, current_assets:k.current_assets ?? null,
+      supplier:k.supplier ?? null, current_liabilities:k.current_liabilities ?? null,
+      quality:{...(k.quality||{}), source:fi.file_name, source_type:fi.source_type, imported_at:fi.created_at,
+        lines:k.lines, parsed_lines:k.parsed_lines, accounts_detected:k.accounts_detected,
+        months_covered:k.months_covered, period_start:k.period_start, period_end:k.period_end,
+        account_balances:k.account_balances||{}, monthly_metrics:k.monthly_metrics||{}},
+      source:fi.file_name, import_id:fi.id
+    });
+    byClient.set(clientId, arr);
+  });
+  // Fallback uniquement pour les exercices NFI historiques qui n'existent pas encore
+  // dans financial_imports.
   (exercises || []).forEach(e => {
-    const arr = byClient.get(String(e.client_id)) || [];
-    arr.push(e);
-    byClient.set(String(e.client_id), arr);
+    const clientId=String(e.client_id); const arr=byClient.get(clientId)||[];
+    if(!arr.some(x=>Number(x.fiscal_year)===Number(e.fiscal_year))) arr.push(e);
+    byClient.set(clientId,arr);
   });
 
   const clients = clientRows || [];
   const uiCompanies = clients.map(c => dbClientToUi(c, byClient.get(String(c.id))));
+
+  const uiPortfolios = (portfolios || []).map(p => ({ id:String(p.id), name:p.name || `Cabinet ${p.id}`, role:roleLabel(p.role), teamId:p.team_id || null }));
+  const portfolioNames = new Map(uiPortfolios.map(p=>[String(p.id),p.name]));
+  for (const c of uiCompanies) { c.cabinetName = portfolioNames.get(String(c.cabinetId)) || "Cabinet"; }
 
   const uiUsers = (team || [])
     .filter(t => t.statut !== "inactif")
@@ -171,7 +218,7 @@ export async function loadNfiState() {
     if (ids.length) uiAssignments[String(c.id)] = [...new Set(ids)];
   }
 
-  return { companies: uiCompanies, users: uiUsers, assignments: uiAssignments, confidentialAccess: uiConf };
+  return { companies: uiCompanies, users: uiUsers, assignments: uiAssignments, confidentialAccess: uiConf, portfolios: uiPortfolios };
 }
 
 
@@ -199,7 +246,7 @@ export async function saveCompany(company, userId) {
   const { data: clientRows, error: clientError } = await supabase.rpc("nfi_get_client", { p_client_id: String(clientId) });
   const client = clientRows?.[0] || null;
   if (clientError) throw clientError;
-  if (!client) throw new Error("Dossier NOVACAB introuvable. NFI ne crée pas de second registre de sociétés.");
+  if (!client) throw new Error("Dossier NOVACAB introuvable. NOVACAB Insight ne crée pas de second registre de sociétés.");
 
   const years = Object.entries(company.years || {}).map(([year, y]) => ({
     client_id: String(clientId), fiscal_year:Number(year), ca:y.ca ?? null, ebe:y.ebe ?? null, rex:y.rex ?? null,
@@ -211,17 +258,44 @@ export async function saveCompany(company, userId) {
   }));
 
   if (years.length) {
+    // Compatibilité historique NFI : on conserve les exercices analytiques.
     const { error } = await supabase.from("nfi_exercises").upsert(years,{onConflict:"client_id,fiscal_year"});
     if (error) throw error;
   }
 
-  if (company.fecRows || company.fileName || company.quality) {
+  // IMPORTANT : tout FEC importé depuis NFI doit également devenir un import
+  // NOVACAB. Ainsi le FEC est visible dans Révision NOVACAB et NFI après rechargement.
+  if (company.novacabFinancialKpis || company.fecRows || company.fileName || company.quality) {
+    const kpisByYear = company.novacabFinancialKpis || Object.fromEntries(
+      Object.entries(company.years || {}).map(([y,v]) => [y, {
+        source: company.fileName || "FEC importé", imported_at:new Date().toISOString(),
+        lines: company.fecRows || company.quality?.rowCount || null, ca:v.ca ?? null,
+        valeur_ajoutee:v.valueAdded ?? null, ebe:v.ebe ?? null, rex:v.rex ?? null,
+        resultat_net:v.net ?? null, tresorerie_nette:v.treasury ?? null, bfr:v.bfr ?? null,
+        quality:v.quality || company.quality || {}
+      }])
+    );
+    for (const [year, kpis] of Object.entries(kpisByYear)) {
+      const { data: existing, error: existingError } = await supabase.from("financial_imports")
+        .select("id").eq("client_id",String(clientId)).eq("exercice",Number(year)).limit(1);
+      if (existingError) throw existingError;
+      if (existing?.length) {
+        const {error}=await supabase.from("financial_imports").update({
+          portefeuille_id:client?.portefeuille_id || null, source_type:"fec", file_name:company.fileName || kpis.source || "FEC importé", kpis
+        }).eq("id",existing[0].id);
+        if(error) throw error;
+      } else {
+        const {error}=await supabase.from("financial_imports").insert({
+          client_id:String(clientId), portefeuille_id:client?.portefeuille_id || null, exercice:Number(year),
+          source_type:"fec", file_name:company.fileName || kpis.source || "FEC importé", kpis
+        });
+        if(error) throw error;
+      }
+    }
     const { error } = await supabase.from("nfi_fec_imports").insert({
       client_id:String(clientId), file_name:company.fileName || "FEC importé",
       row_count:company.fecRows || company.quality?.rowCount || null,
-      exercise_count:years.length || Object.keys(company.years || {}).length,
-      quality:company.quality || {},
-      imported_by:userId || null
+      exercise_count:Object.keys(kpisByYear).length, quality:company.quality || {}, imported_by:userId || null
     });
     if (error) throw error;
   }
@@ -260,7 +334,7 @@ export async function deleteCompany(clientId) {
     if (error) throw error;
     return;
   }
-  // Sécurité : supprimer les données financières NFI, jamais le dossier NOVACAB.
+  // Sécurité : supprimer les données financières NOVACAB Insight, jamais le dossier NOVACAB.
   const { error } = await supabase.from("nfi_exercises").delete().eq("client_id",String(clientId));
   if (error) throw error;
   const { error: fecError } = await supabase.from("nfi_fec_imports").delete().eq("client_id",String(clientId));

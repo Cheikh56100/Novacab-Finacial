@@ -56,7 +56,7 @@ export default function SectorExplorer({companies=[],onOpenCompany}){
 
       {!hasInternal&&<section className="panel emptyState">
         <Info size={18}/><div><b>Aucune donnée financière cabinet pour ce secteur</b>
-        <p>Le secteur reste visible. Importez un FEC pour calculer automatiquement les quartiles et la médiane des KPI NFI.</p></div>
+        <p>Le secteur reste visible. Importez un FEC pour calculer automatiquement les quartiles et la médiane des KPI NOVACAB Insight.</p></div>
       </section>}
 
       {hasInternal&&<section className="panel">
@@ -74,7 +74,7 @@ export default function SectorExplorer({companies=[],onOpenCompany}){
          {market.roe&&<tr><td><b>Rentabilité financière des capitaux propres (%)</b></td><td>{fmt(market.roe.q1,"%")}</td><td><b>{fmt(market.roe.q2,"%")}</b></td><td>{fmt(market.roe.q3,"%")}</td></tr>}
          {market.bfrDays&&<tr><td><b>Poids du BFR d'exploitation (jours)</b></td><td>{fmt(market.bfrDays.q1,"j")}</td><td><b>{fmt(market.bfrDays.q2,"j")}</b></td><td>{fmt(market.bfrDays.q3,"j")}</td></tr>}
          {market.grossDebtRate&&<tr><td><b>Taux brut d'endettement financier (%)</b></td><td>{fmt(market.grossDebtRate.q1,"%")}</td><td><b>{fmt(market.grossDebtRate.q2,"%")}</b></td><td>{fmt(market.grossDebtRate.q3,"%")}</td></tr>}
-       </tbody></table></div>:<div className="emptyState compact"><Globe2 size={16}/><div><b>Référence marché BDF non disponible à ce niveau de secteur</b><p>Le référentiel NAF reste disponible ; NFI n'invente pas de valeur de marché lorsqu'une statistique officielle n'est pas publiée à ce niveau.</p></div></div>}
+       </tbody></table></div>:<div className="emptyState compact"><Globe2 size={16}/><div><b>Référence marché BDF non disponible à ce niveau de secteur</b><p>Le référentiel NAF reste disponible ; NOVACAB Insight n'invente pas de valeur de marché lorsqu'une statistique officielle n'est pas publiée à ce niveau.</p></div></div>}
        <div className="marketSource"><small>{MARKET_SOURCE}</small></div>
       </section>
 
@@ -82,7 +82,7 @@ export default function SectorExplorer({companies=[],onOpenCompany}){
        <div className="panelHead"><div><h2>Lecture du secteur</h2><p>Les données cabinet et les références marché sont séparées.</p></div></div>
        <div className="interpretationText">
         <p>{!hasInternal?`Aucune société financièrement analysée n'est encore rattachée à « ${current} ». Le secteur reste néanmoins disponible dans le référentiel NAF.`:!robust?`Le référentiel cabinet repose sur ${bench.count} société${bench.count>1?"s":""}. Il constitue une indication ; une population plus large renforcera la robustesse statistique.`:`La médiane cabinet est calculée sur ${bench.count} société${bench.count>1?"s":""} disposant d'un exercice analysé.`}</p>
-        {market&&<p>La référence marché affichée provient des fascicules sectoriels Banque de France / FIBEN 2024. Elle est présentée avec sa définition propre et ne remplace pas automatiquement un KPI NFI de définition différente.</p>}
+        {market&&<p>La référence marché affichée provient des fascicules sectoriels Banque de France / FIBEN 2024. Elle est présentée avec sa définition propre et ne remplace pas automatiquement un KPI NOVACAB Insight de définition différente.</p>}
        </div>
       </section>
 

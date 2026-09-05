@@ -8,7 +8,17 @@ const DEFAULT_URL = "https://ybewryneaksqhtlagvxk.supabase.co";
 const DEFAULT_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InliZXdyeW5lYWtzcWh0bGFndnhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3ODk2OTYsImV4cCI6MjEwMjM2NTY5Nn0.13uLZry9ivPwFZSJy7a362SSvr6U1HIl_WjkbJO93PY";
 
 const rawUrl = String(import.meta.env.VITE_SUPABASE_URL || DEFAULT_URL).trim();
-const url = rawUrl.replace(/^https:\/\/https:\/\//i, "https://");
+function normalizeSupabaseUrl(value){
+  let v=String(value||"").trim().replace(/^https:\/\/https:\/\//i,"https://");
+  try{
+    const u=new URL(v);
+    if(!/^https?:$/.test(u.protocol)) return DEFAULT_URL;
+    // A Supabase project URL must point to the project root. Remove accidental
+    // /rest/v1, /auth/v1, /functions/v1, etc. paths copied from an API endpoint.
+    return `${u.protocol}//${u.host}`;
+  }catch{return DEFAULT_URL;}
+}
+const url = normalizeSupabaseUrl(rawUrl);
 const anonKey = String(import.meta.env.VITE_SUPABASE_ANON_KEY || DEFAULT_ANON_KEY).trim();
 
 if (/^https:\/\/https:\/\//i.test(rawUrl)) {

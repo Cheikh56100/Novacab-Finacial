@@ -64,7 +64,7 @@ export async function getNfiSession({ handoffCode = null } = {}) {
     const { data, error } = await supabase.functions.invoke("nfi-sso-handoff", {
       body: { action: "exchange", code: handoffCode }
     });
-    if (error) throw error;
+    if (error) throw new Error(`Connexion NOVACAB Insight impossible : ${error.message || "fonction SSO indisponible"}. Vérifiez que la fonction Supabase « nfi-sso-handoff » est bien déployée.`);
     if (!data?.token_hash || !data?.email) throw new Error("Le lien de connexion NOVACAB est invalide ou expiré.");
     const { error: verifyError } = await supabase.auth.verifyOtp({
       type: "magiclink",

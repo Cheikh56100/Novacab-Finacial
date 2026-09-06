@@ -7,6 +7,9 @@ import Companies from "./components/Companies";
 import SectorExplorer from "./components/SectorExplorer";
 import Import from "./components/Import";
 import ClientReport from "./components/ClientReport";
+import PortfolioAlerts from "./components/PortfolioAlerts";
+import ActionPlan from "./components/ActionPlan";
+import Scenarios from "./components/Scenarios";
 import {ratios,financialScore} from "./services/financialEngine";
 import AuthGate from "./components/AuthGate";
 import {supabase,supabaseReady} from "./services/supabaseClient";
@@ -111,11 +114,11 @@ export default function App(){
  return <div className="app"><Sidebar page={page} setPage={setPage}/><div className="main">{syncError&&<div className="notice warningNotice topNotice">Synchronisation : {syncError}</div>}<Topbar novacabUser={novacabUser} standaloneUser={standaloneUser} onSignOut={async()=>{try{if(supabase) await supabase.auth.signOut();setAuthUser(null);setNovacabUser(null);setStandaloneUser(null);setCompany(null);setCompanies([]);setPage("dashboard")}catch(e){setSyncError(e.message);throw e}} } page={page} companies={companies} onOpenCompany={openCompany} setPage={setPage} authUser={authUser}/>
    {page==="dashboard"&&<Home companies={visibleCompanies} setPage={setPage} onOpenCompany={openCompany} novacabUser={novacabUser} portfolios={portfolios} selectedPortfolioIds={selectedPortfolioIds} onPortfolioChange={setSelectedPortfolioIds}/>} 
    {page==="companies"&&<Companies companies={visibleCompanies} setCompany={openCompany} onAdd={()=>{setPendingCompany(null);setPage("import")}} onImportCompany={c=>{setPendingCompany(c);setPage("import")}} onDeleteCompany={removeCompany}/>} 
-   {page==="analysis"&&<Dashboard company={company||visibleCompanies[0]} year={year} setYear={setYear} setPage={setPage}/>} 
+   {page==="analysis"&&<Dashboard company={company||visibleCompanies[0]} year={year} setYear={setYear} setPage={setPage} allCompanies={visibleCompanies}/>} 
    {page==="sector"&&<SectorExplorer companies={visibleCompanies} onOpenCompany={openCompany}/>} 
    {page==="benchmark"&&<Benchmark company={company||visibleCompanies[0]} allCompanies={visibleCompanies} setCompany={openCompany}/>} 
    {page==="import"&&<Import companies={visibleCompanies} onImported={addCompany} pendingCompany={pendingCompany} standalone={!novacabUser?.portefeuille_id}/>}
-   {page==="report"&&<ClientReport company={company||visibleCompanies[0]} companies={visibleCompanies} novacabUser={novacabUser}/>} 
+   {page==="report"&&<ClientReport company={company||visibleCompanies[0]} companies={visibleCompanies} novacabUser={novacabUser}/>} {page==="alerts"&&<PortfolioAlerts companies={visibleCompanies} onOpen={openCompany}/>} {page==="plan"&&<ActionPlan company={company||visibleCompanies[0]} onOpenCompany={openCompany}/>} {page==="scenarios"&&<Scenarios company={company||visibleCompanies[0]}/>} 
  </div></div>;
 }
 

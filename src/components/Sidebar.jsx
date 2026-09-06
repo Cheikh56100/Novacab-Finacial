@@ -1,5 +1,5 @@
 import React from "react";
-import { BarChart3, BriefcaseBusiness, GitCompare, Network, FileText } from "lucide-react";
+import { BarChart3, BriefcaseBusiness, GitCompare, Network, FileText, BellRing, ListChecks, SlidersHorizontal } from "lucide-react";
 
 export default function Sidebar({page,setPage}) {
   const items = [
@@ -7,6 +7,9 @@ export default function Sidebar({page,setPage}) {
     ["companies","Mes dossiers",BriefcaseBusiness],
     ["sector","Secteur",Network],
     ["benchmark","Comparer",GitCompare],
+    ["alerts","Alertes portefeuille",BellRing],
+    ["plan","Plan d’action",ListChecks],
+    ["scenarios","Simuler",SlidersHorizontal],
     ["report","Rapport client",FileText],
   ];
   return <aside className="sidebar">

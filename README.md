@@ -22,3 +22,11 @@ Insight supporte désormais un utilisateur membre de plusieurs cabinets via plus
 - Le benchmark inter-cabinets compare les médianes des dossiers analysés.
 - Les droits NOVACAB des autres modules ne sont pas élargis.
 - À appliquer dans Supabase : `supabase/20260905_nfi_multi_cabinets.sql`.
+
+## V5 — finalisation du copilote financier
+- diagnostic en 3 points avec niveau de confiance et mode de calcul ;
+- contrôle de fiabilité des données FEC ;
+- waterfall EBE causal avec résiduel explicitement isolé ;
+- gap-to-target vers la médiane ;
+- tests renforcés du moteur financier ;
+- aucune donnée absente n'est présentée comme certaine.

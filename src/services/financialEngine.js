@@ -378,3 +378,86 @@ export function clientInterpretations(company={},year){
   if(y.treasury<0) paragraphs.push(`La trésorerie est négative de ${Math.abs(Math.round(y.treasury)).toLocaleString("fr-FR")} €. Dans ce contexte, l'amélioration du cash doit être pilotée avec un suivi rapproché des encaissements, des décaissements et des besoins liés au BFR.`);
   return paragraphs.slice(0,5);
 }
+
+// V5 — couche de fiabilité et d'explicabilité du copilote.
+export function dataReliability(company={}, year=null){
+  const years=Object.keys(company?.years||{}).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
+  const selected=year && company?.years?.[year] ? Number(year) : years.at(-1);
+  const y=company?.years?.[selected]||{};
+  const q=company?.quality||y?.quality||{};
+  const checks=[
+    {key:"fec",label:"FEC disponible",ok:Number(q.rowCount||company?.fecRows)>0,weight:25},
+    {key:"balance",label:"Écritures équilibrées",ok:q.balanceBalanced===true || y.balanceBalanced===true,weight:25},
+    {key:"exercise",label:"Exercice identifié",ok:Number.isFinite(selected),weight:10},
+    {key:"ca",label:"Chiffre d'affaires exploitable",ok:Number.isFinite(Number(y.ca))&&Number(y.ca)!==0,weight:10},
+    {key:"result",label:"EBE exploitable",ok:Number.isFinite(Number(y.ebe)),weight:10},
+    {key:"bfr",label:"BFR documenté",ok:["bfr","client","stock","supplier"].every(k=>Number.isFinite(Number(y[k]))),weight:10},
+    {key:"history",label:"Historique N-1 disponible",ok:!!(selected&&company?.years?.[selected-1]),weight:10}
+  ];
+  const score=Math.round(checks.reduce((s,c)=>s+(c.ok?c.weight:0),0));
+  const level=score>=85?"élevée":score>=65?"moyenne":"faible";
+  const warnings=[];
+  if(!checks.find(c=>c.key==="fec").ok) warnings.push("Aucune écriture FEC exploitable.");
+  if(!checks.find(c=>c.key==="balance").ok) warnings.push("L'équilibre débit/crédit n'est pas validé.");
+  if(!checks.find(c=>c.key==="history").ok) warnings.push("L'historique N-1 est indisponible : les évolutions ne doivent pas être interprétées comme une tendance.");
+  if(!checks.find(c=>c.key==="bfr").ok) warnings.push("Le BFR est reconstruit ou partiel : son impact doit rester indicatif.");
+  return {score,level,year:selected,checks,warnings,calculationMode:score>=85?"calcul fiable":score>=65?"calcul fiable avec réserves":"reconstruction / données insuffisantes"};
+}
+
+export function ebeWaterfall(company={}, year=null){
+  const years=Object.keys(company?.years||{}).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
+  const currentYear=year && company?.years?.[year] ? Number(year) : years.at(-1);
+  const current=company?.years?.[currentYear]||{};
+  const previous=company?.years?.[currentYear-1]||null;
+  if(!previous) return {available:false,year:currentYear,items:[],delta:null};
+  const components=[
+    ["Variation du CA",n(current.ca)-n(previous.ca),"ca"],
+    ["Achats",-(n(current.purchases)-n(previous.purchases)),"purchases"],
+    ["Charges externes",-(n(current.external)-n(previous.external)),"external"],
+    ["Personnel",-(n(current.personnel)-n(previous.personnel)),"personnel"],
+    ["Impôts et taxes",-(n(current.taxes)-n(previous.taxes)),"taxes"]
+  ];
+  const accounted=components.reduce((s,x)=>s+x[1],0);
+  const delta=n(current.ebe)-n(previous.ebe);
+  const other=delta-accounted;
+  return {available:true,year:currentYear,previousYear:currentYear-1,delta,items:[
+    {key:"start",label:`EBE ${currentYear-1}`,value:n(previous.ebe),type:"total"},
+    ...components.map(([label,value,key])=>({key,label,value,type:value>=0?"positive":"negative"})),
+    {key:"other",label:"Autres effets / reclassements",value:other,type:other>=0?"positive":"negative"},
+    {key:"end",label:`EBE ${currentYear}`,value:n(current.ebe),type:"total"}
+  ]};
+}
+
+export function gapToTarget(company={}, benchmark={}, year=null){
+  const years=Object.keys(company?.years||{}).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
+  const selected=year && company?.years?.[year] ? Number(year) : years.at(-1);
+  const y=company?.years?.[selected]||{};
+  const margin=n(y.ca)?n(y.ebe)/n(y.ca)*100:null;
+  const median=Number(benchmark?.margin?.median);
+  if(!Number.isFinite(margin)||!Number.isFinite(median)||!n(y.ca)) return {available:false,margin,median,gapPoints:null,ebePotential:null};
+  const gapPoints=median-margin;
+  return {available:gapPoints>0,margin,median,gapPoints,ebePotential:Math.max(0,gapPoints/100*n(y.ca))};
+}
+
+export function copilotTopInsights(company={}, year=null, benchmark=null){
+  const years=Object.keys(company?.years||{}).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
+  const selected=year && company?.years?.[year] ? Number(year) : years.at(-1);
+  const y=company?.years?.[selected]||{};
+  const prev=company?.years?.[selected-1]||null;
+  const r=ratios(y);
+  const reliability=dataReliability(company,selected);
+  const raw=diagnostics(company,selected)||[];
+  const candidates=[];
+  raw.forEach(d=>candidates.push({level:d.level,title:d.title,why:d.text,importance:d.level==="bad"?"élevée":d.level==="warning"?"modérée":"favorable",action:d.level==="bad"?"Contrôler la cause et quantifier l'impact.":"Surveiller l'évolution et confirmer la cause."}));
+  if(prev){
+    const caG=yoy(y.ca,prev.ca), ebeG=yoy(y.ebe,prev.ebe);
+    if(Number.isFinite(caG)&&Number.isFinite(ebeG)&&caG>5&&ebeG<caG-3) candidates.push({level:"warning",title:"La croissance ne se transforme pas pleinement en EBE",why:`Le CA progresse de ${caG.toFixed(1)} % tandis que l'EBE évolue de ${ebeG.toFixed(1)} %. La rentabilité absorbe donc une partie de la croissance.`,importance:"élevée",action:"Analyser les achats, charges externes et personnel par comptes contributifs."});
+    if(Number.isFinite(caG)&&Number.isFinite(ebeG)&&caG<0&&ebeG>caG) candidates.push({level:"good",title:"L'EBE résiste mieux que le chiffre d'affaires",why:`Le CA évolue de ${caG.toFixed(1)} % alors que l'EBE évolue de ${ebeG.toFixed(1)} %. La structure de coûts amortit partiellement le recul de l'activité.`,importance:"favorable",action:"Identifier les leviers qui ont protégé la marge et tester leur soutenabilité."});
+  }
+  if(benchmark){const gap=gapToTarget(company,benchmark,selected);if(gap.available)candidates.push({level:"warning",title:"La marge reste sous la médiane du portefeuille",why:`La marge EBE est de ${gap.margin.toFixed(1)} % contre ${gap.median.toFixed(1)} % de médiane, soit ${gap.gapPoints.toFixed(1)} point(s).`,importance:"élevée",action:`Identifier les leviers permettant de récupérer jusqu'à ${Math.round(gap.ebePotential).toLocaleString("fr-FR")} € d'EBE à CA constant.`});}
+  const rank={bad:0,warning:1,good:2};
+  const unique=[];const seen=new Set();
+  for(const item of candidates.sort((a,b)=>rank[a.level]-rank[b.level])){if(seen.has(item.title))continue;seen.add(item.title);unique.push(item);if(unique.length===3)break;}
+  while(unique.length<3){unique.push({level:"info",title:"Aucun troisième signal suffisamment documenté",why:"Les données disponibles ne permettent pas de formuler une conclusion supplémentaire sans extrapolation.",importance:"à confirmer",action:"Compléter les données avant d'élargir le diagnostic."});}
+  return {year:selected,items:unique,reliability,ratios:r};
+}
